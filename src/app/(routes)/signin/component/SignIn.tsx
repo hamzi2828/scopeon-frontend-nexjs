@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation"; // Use Next.js router for navigation
 
 const SignIn: React.FC = () => {
@@ -112,7 +113,9 @@ const SignIn: React.FC = () => {
                   Forgot your password?
                 </a>
                 <p className="text-sm text-blue-500">
-                  Dont have an account? <a href="/sign-up/customer" className="hover:underline font-semibold cursor-pointer">Sign up</a>
+                  Dont have an account? <Link href="/signup/customer" className="hover:underline font-semibold">
+                    Sign up
+                  </Link>
                 </p>
               </div>
 
@@ -171,7 +174,9 @@ const SignIn: React.FC = () => {
                   Forgot your password?
                 </a>
                 <p className="text-sm text-blue-500">
-                  Dont have an account? <a href="/sign-up/merchant" className="hover:underline font-semibold cursor-pointer">Sign up</a>
+                  Dont have an account? <Link href="/signup/merchant" className="hover:underline font-semibold">
+                    Sign up
+                  </Link>
                 </p>
               </div>
 
