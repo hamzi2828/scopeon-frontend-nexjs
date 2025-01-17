@@ -97,7 +97,7 @@ const NavBar = () => {
             </NavLink>
           </li>
           <li className="text-xl block py-2 border-b-2 border-transparent hover:text-orange-500 hover:after:bg-orange-500 hover:after:w-full">
-            <NavLink href="/sign-in">
+            <NavLink href="/signin">
               Sign In
             </NavLink>
           </li>

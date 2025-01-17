@@ -1,5 +1,7 @@
 // src/app/page.tsx
 import NavBar from "../../components/NavBar";
+import Footer from "../../components/Footer";
+
 import BannerSection from "./component/BannerSection";
 import FeaturedListing from "./component/FeaturedListing";
 import WorkingCards from "./component/WorkingCards";
@@ -23,6 +25,9 @@ export default function Home() {
       <UpcomingEvents />
       <MoreLeadsBanner />
       <Blogs />
+
+
+      <Footer />
     </main>
   );
 }
