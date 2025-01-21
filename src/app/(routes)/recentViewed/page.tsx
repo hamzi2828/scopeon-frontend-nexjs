@@ -1,14 +1,13 @@
-//src/app/(routes)/wishlist/page.tsx
-
+//src/app/(routes)/recentViewed/page.tsx
 import NavBar from "../../components/NavBar";
 import Footer from "../../components/Footer";
-import WishCards from "./component/Wishlist";
+import RecentViewed from "./component/recentViewed";
 
-export default function WishListPage() {
+export default function RecentViewedPage() {
   return (
     <main>
          <NavBar />
-         <WishCards />
+         <RecentViewed />
          <Footer />
     </main>
   );

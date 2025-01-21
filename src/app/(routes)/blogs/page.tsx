@@ -1,14 +1,14 @@
-//src/app/(routes)/wishlist/page.tsx
+//src/app/(routes)/blogs/page.tsx
 
 import NavBar from "../../components/NavBar";
 import Footer from "../../components/Footer";
-import WishCards from "./component/Wishlist";
+import AllBlogs from "./component/AllBlogs";
 
-export default function WishListPage() {
+export default function BlogsPage() {
   return (
     <main>
          <NavBar />
-         <WishCards />
+         <AllBlogs />
          <Footer />
     </main>
   );

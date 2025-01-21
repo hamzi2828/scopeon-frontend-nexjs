@@ -1,38 +1,252 @@
-const listings = [
-    {
-        id: 1,
-        title: 'Facil Restaurant',
-        imageUrl: 'https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/restaurent-3.jpg',
-        address: 'Potsdamer Straße 3, 10785 Berlin',
-        website: 'www.example.com',
-        phone: '+49 30 000000000',
-        openStatus: 'Open at 9pm tomorrow',
-        closeStatus: 'Close Now',
-        rating: 22,
-    },
-    {
-        id: 2,
-        title: 'Delicious Cafe',
-        imageUrl: 'https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/moviehall.jpg',
-        address: 'Kurfürstendamm 12, 10719 Berlin',
-        website: 'www.deliciouscafe.com',
-        phone: '+49 30 123456789',
-        openStatus: 'Open Now',
-        closeStatus: 'Close at 11pm',
-        rating: 35,
-    },
-    {
-        id: 3,
-        title: 'Modern Bistro',
-        imageUrl: 'https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/shopping-1.jpg',
-        address: 'Alexanderplatz 4, 10178 Berlin',
-        website: 'www.modernbistro.com',
-        phone: '+49 30 987654321',
-        openStatus: 'Open at 10am',
-        closeStatus: 'Close Now',
-        rating: 18,
-    },
+interface ListingCard {
+    id: number;
+    title: string;
+    rating: string;
+    ratingCount: string;
+    category: string;
+    address: string;
+    website: string;
+    phone: string;
+    openStatus: string;
+    closeStatus: string;
+    imageUrl: string;
+    categoryIcon: JSX.Element;
+    heartIcon: JSX.Element;
+  }
+  interface Blog {
+    id: number;
+    title: string;
+    imageUrl: string;
+    author: string;
+    date: string;
+    category: string;
+    description: string;
+    detailsLink: string;
+    icons: {
+        authorIcon: JSX.Element;
+        dateIcon: JSX.Element;
+        categoryIcon: JSX.Element;
+    };
+}
+interface Listing {
+    id: number;
+    title: string;
+    imageUrl: string;
+    address: string;
+    website: string;
+    phone: string;
+    openStatus: string;
+    closeStatus: string;
+    rating: number;
+  }
+
+
+
+interface BlogPost {
+    id: number;
+    title: string;
+    date: string;
+    description: string;
+    tag: string;
+    imageUrl: string;
+}
+
+interface BlogCard {
+    id: number;
+    title: string;
+    author: string;
+    description: string;
+    date: string;
+    category: string;
+    imageUrl: string;
+    authorIcon: JSX.Element;
+    calendarIcon: JSX.Element;
+    categoryIcon: JSX.Element;
+}
+
+interface UpcomingCard {
+    id: number;
+    title: string;
+    dateRange: string;
+    location: string;
+    imageUrl: string;
+    icon: JSX.Element;
+    heartIcon: JSX.Element;
+  }
+
+  interface WorkingCard {
+    id: number;
+    step: string;
+    title: string;
+    description: string;
+    icon: JSX.Element;
+  }
+
+const listings: Listing[] = [
+  {
+    id: 1,
+    title: "Facil Restaurant",
+    imageUrl:
+      "https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/restaurent-3.jpg",
+    address: "Potsdamer Straße 3, 10785 Berlin",
+    website: "www.example.com",
+    phone: "+49 30 000000000",
+    openStatus: "Open at 9pm tomorrow",
+    closeStatus: "Close Now",
+    rating: 22,
+  },
+  {
+    id: 2,
+    title: "Delicious Cafe",
+    imageUrl:
+      "https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/moviehall.jpg",
+    address: "Kurfürstendamm 12, 10719 Berlin",
+    website: "www.deliciouscafe.com",
+    phone: "+49 30 123456789",
+    openStatus: "Open Now",
+    closeStatus: "Close at 11pm",
+    rating: 35,
+  },
+  {
+    id: 3,
+    title: "Modern Bistro",
+    imageUrl:
+      "https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/shopping-1.jpg",
+    address: "Alexanderplatz 4, 10178 Berlin",
+    website: "www.modernbistro.com",
+    phone: "+49 30 987654321",
+    openStatus: "Open at 10am",
+    closeStatus: "Close Now",
+    rating: 18,
+  },
 ];
+const workingCards: WorkingCard[] = [
+    {
+      id: 1,
+      step: "01.",
+      title: "Search Listing",
+      description: "Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet.",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="2.7em" height="2.7em" viewBox="0 0 512 512">
+          <path
+            fill="currentColor"
+            d="M464 428L339.92 303.9a160.48 160.48 0 0 0 30.72-94.58C370.64 120.37 298.27 48 209.32 48S48 120.37 48 209.32s72.37 161.32 161.32 161.32a160.48 160.48 0 0 0 94.58-30.72L428 464ZM209.32 319.69a110.38 110.38 0 1 1 110.37-110.37a110.5 110.5 0 0 1-110.37 110.37"
+          />
+        </svg>
+      ),
+    },
+    {
+      id: 2,
+      step: "02.",
+      title: "Choose A Location",
+      description: "Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet.",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="2.7em" height="2.7em" viewBox="0 0 24 24">
+          <path
+            fill="currentColor"
+            d="m20.5 3l-.16.03L15 5.1L9 3L3.36 4.9c-.21.07-.36.25-.36.48V20.5a.5.5 0 0 0 .5.5l.16-.03L9 18.9l6 2.1l5.64-1.9c.21-.07.36-.25.36-.48V3.5a.5.5 0 0 0-.5-.5M10 5.47l4 1.4v11.66l-4-1.4zm-5 .99l3-1.01v11.7l-3 1.16zm14 11.08l-3 1.01V6.86l3-1.16z"
+          />
+        </svg>
+      ),
+    },
+    {
+      id: 3,
+      step: "03.",
+      title: "Find What You Want",
+      description: "Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet.",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="2.7em" height="2.7em" viewBox="0 0 496 512">
+          <path
+            fill="currentColor"
+            d="M248 8C111 8 0 119 0 256s111 248 248 248s248-111 248-248S385 8 248 8m0 448c-110.3 0-200-89.7-200-200S137.7 56 248 56s200 89.7 200 200s-89.7 200-200 200m-80-216c17.7 0 32-14.3 32-32s-14.3-32-32-32s-32 14.3-32 32s14.3 32 32 32m160 0c17.7 0 32-14.3 32-32s-14.3-32-32-32s-32 14.3-32 32s14.3 32 32 32m4 72.6c-20.8 25-51.5 39.4-84 39.4s-63.2-14.3-84-39.4c-8.5-10.2-23.7-11.5-33.8-3.1c-10.2 8.5-11.5 23.6-3.1 33.8c30 36 74.1 56.6 120.9 56.6s90.9-20.6 120.9-56.6c8.5-10.2 7.1-25.3-3.1-33.8c-10.1-8.4-25.3-7.1-33.8 3.1"
+          />
+        </svg>
+      ),
+    },
+  ];
+const upcomingCards: UpcomingCard[] = [
+    {
+      id: 1,
+      title: "Rock&Roll Concert",
+      dateRange: "12-15 NOV",
+      location: "Adirondack, New York, USA",
+      imageUrl: "https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/event-1.jpg",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.25em" height="1.25em" viewBox="0 0 24 24" className="mr-2">
+          <path
+            fill="currentColor"
+            d="M12 2C8.14 2 5 5.14 5 9c0 4.92 5 11 7 11s7-6.08 7-11c0-3.86-3.14-7-7-7m0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5Z"
+          />
+        </svg>
+      ),
+      heartIcon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.3em" height="1.3em" viewBox="0 0 24 24">
+          <path
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M19.5 12.572L12 20l-7.5-7.428A5 5 0 1 1 12 6.006a5 5 0 1 1 7.5 6.572"
+          />
+        </svg>
+      ),
+    },
+    {
+      id: 2,
+      title: "Winter Concert",
+      dateRange: "21 NOV",
+      location: "Brooklyn, New York, USA",
+      imageUrl: "https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/event-2.jpg",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.25em" height="1.25em" viewBox="0 0 24 24" className="mr-2">
+          <path
+            fill="currentColor"
+            d="M12 2C8.14 2 5 5.14 5 9c0 4.92 5 11 7 11s7-6.08 7-11c0-3.86-3.14-7-7-7m0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5Z"
+          />
+        </svg>
+      ),
+      heartIcon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.3em" height="1.3em" viewBox="0 0 24 24">
+          <path
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M19.5 12.572L12 20l-7.5-7.428A5 5 0 1 1 12 6.006a5 5 0 1 1 7.5 6.572"
+          />
+        </svg>
+      ),
+    },
+    {
+      id: 3,
+      title: "Concerts For No Racism",
+      dateRange: "17-18 Dec",
+      location: "Boston, New York, USA",
+      imageUrl: "https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/event-3.jpg",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.25em" height="1.25em" viewBox="0 0 24 24" className="mr-2">
+          <path
+            fill="currentColor"
+            d="M12 2C8.14 2 5 5.14 5 9c0 4.92 5 11 7 11s7-6.08 7-11c0-3.86-3.14-7-7-7m0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5Z"
+          />
+        </svg>
+      ),
+      heartIcon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.3em" height="1.3em" viewBox="0 0 24 24">
+          <path
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M19.5 12.572L12 20l-7.5-7.428A5 5 0 1 1 12 6.006a5 5 0 1 1 7.5 6.572"
+          />
+        </svg>
+      ),
+    },
+  ];
 const categories = [
     {
         name: "Restaurant",
@@ -62,7 +276,7 @@ const categories = [
         name: "Movie",
         svg: (
             <svg className="w-10 h-10 text-orange-600 svg-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                <path fill="currentColor" d="m19.729 3.917l.05.16l.552 1.922a.75.75 0 0 1-.418.893l-.096.035L9.09 10.002h11.16a.75.75 0 0 1 .742.65l.007.1v8.499a2.75 2.75 0 0 1-2.582 2.745l-.168.005H5.75a2.75 2.75 0 0 1-2.745-2.582L3 19.25v-8.392l-.522-1.821a2.75 2.75 0 0 1 1.726-3.35l.16-.052L16.378 2.19a2.75 2.75 0 0 1 3.35 1.726m-.23 7.585H4.5v7.749c0 .604.429 1.108.998 1.224l.124.02l.128.006h12.5a1.25 1.25 0 0 0 1.243-1.122l.006-.128zM6.272 6.649l-1.496.43a1.25 1.25 0 0 0-.886 1.42l.03.125l.344 1.201l.295-.085zm4.756-1.363l-2.717.779l-1.714 3.09l2.718-.778zm4.758-1.365l-2.718.78l-1.713 3.09l2.716-.778zm1.847-.233l-1.521 2.74l2.569-.737l-.344-1.2a1.25 1.25 0 0 0-.704-.803" />
+                <path fill="currentColor" d="m20.5 3l-.16.03L15 5.1L9 3L3.36 4.9c-.21.07-.36.25-.36.48V20.5a.5.5 0 0 0 .5.5l.16-.03L9 18.9l6 2.1l5.64-1.9c.21-.07.36-.25.36-.48V3.5a.5.5 0 0 0-.5-.5M10 5.47l4 1.4v11.66l-4-1.4zm-5 .99l3-1.01v11.7l-3 1.16zm14 11.08l-3 1.01V6.86l3-1.16z" />
             </svg>
         )
     },
@@ -76,165 +290,9 @@ const categories = [
     }
 ];
 
-const workingcards = [
-    {
-        id: 1,
-        step: "01.",
-        title: "Search Listing",
-        description: "Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet.",
-        icon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="2.7em" height="2.7em" viewBox="0 0 512 512">
-                <path fill="currentColor" d="M464 428L339.92 303.9a160.48 160.48 0 0 0 30.72-94.58C370.64 120.37 298.27 48 209.32 48S48 120.37 48 209.32s72.37 161.32 161.32 161.32a160.48 160.48 0 0 0 94.58-30.72L428 464ZM209.32 319.69a110.38 110.38 0 1 1 110.37-110.37a110.5 110.5 0 0 1-110.37 110.37" />
-            </svg>
-        )
-    },
-    {
-        id: 2,
-        step: "02.",
-        title: "Choose A Location",
-        description: "Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet.",
-        icon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="2.7em" height="2.7em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="m20.5 3l-.16.03L15 5.1L9 3L3.36 4.9c-.21.07-.36.25-.36.48V20.5a.5.5 0 0 0 .5.5l.16-.03L9 18.9l6 2.1l5.64-1.9c.21-.07.36-.25.36-.48V3.5a.5.5 0 0 0-.5-.5M10 5.47l4 1.4v11.66l-4-1.4zm-5 .99l3-1.01v11.7l-3 1.16zm14 11.08l-3 1.01V6.86l3-1.16z" />
-            </svg>
-        )
-    },
-    {
-        id: 3,
-        step: "03.",
-        title: "Find What You Want",
-        description: "Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet.",
-        icon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="2.7em" height="2.7em" viewBox="0 0 496 512">
-                <path fill="currentColor" d="M248 8C111 8 0 119 0 256s111 248 248 248s248-111 248-248S385 8 248 8m0 448c-110.3 0-200-89.7-200-200S137.7 56 248 56s200 89.7 200 200s-89.7 200-200 200m-80-216c17.7 0 32-14.3 32-32s-14.3-32-32-32s-32 14.3-32 32s14.3 32 32 32m160 0c17.7 0 32-14.3 32-32s-14.3-32-32-32s-32 14.3-32 32s14.3 32 32 32m4 72.6c-20.8 25-51.5 39.4-84 39.4s-63.2-14.3-84-39.4c-8.5-10.2-23.7-11.5-33.8-3.1c-10.2 8.5-11.5 23.6-3.1 33.8c30 36 74.1 56.6 120.9 56.6s90.9-20.6 120.9-56.6c8.5-10.2 7.1-25.3-3.1-33.8c-10.1-8.4-25.3-7.1-33.8 3.1" />
-            </svg>
-        )
-    }
-];
 
-const listingcards = [
-    {
-        id: 1,
-        title: "Facil Restaurant",
-        rating: "4.3/5",
-        ratingCount: "22",
-        category: "Restaurant",
-        address: "Potsdamer Straße 3, 10785 Berlin",
-        website: "www.example.com",
-        phone: "+49 30 00000000",
-        openStatus: 'Open at 9pm tomorrow',
-        closeStatus: 'Close Now',
-        imageUrl: 'https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/restaurent-3.jpg',
-        categoryIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12 2a5 5 0 0 0-5 5v3H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V11a1 1 0 0 0-1-1h-3V7a5 5 0 0 0-5-5Zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3ZM6 12h12v8H6v-8Zm4 2v4h2v-4h-2Zm4 0v4h2v-4h-2Z" />
-            </svg>
-        ),
-        heartIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A5.48 5.48 0 0 1 7.5 3C9.24 3 11 4.4 11.25 4.71A5.454 5.454 0 0 1 16.5 3C19.54 3 22 5.44 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35Z" />
-            </svg>
-        )
-    },
-    {
-        id: 2,
-        title: "Amikon Blue Hotel",
-        rating: "4.3/5",
-        ratingCount: "22",
-        category: "Hotel",
-        address: "Landsberger Allee 106, 10369 Berlin",
-        website: "www.example.com",
-        phone: "+49 30 00000000",
-        openStatus: 'Open Now',
-        closeStatus: 'Close at 11pm',
-        imageUrl: 'https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/moviehall.jpg',
-        categoryIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M7 4v3H3V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1Zm10 0v3h-4V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1ZM3 8h18v11H3V8Zm9 4a2 2 0 0 0-2 2v2h4v-2a2 2 0 0 0-2-2ZM8 17v-3a4 4 0 1 1 8 0v3h2v2H6v-2h2Zm8.83-7c.23.35.17.81-.14 1.1l-1.92 1.75l.48 2.44c.08.41-.15.83-.53 1.04c-.38.21-.84.16-1.16-.12L12 14.8l-1.56 1.38c-.32.28-.78.33-1.16.12c-.38-.21-.61-.63-.53-1.04l.48-2.44L7.3 11.1c-.31-.29-.37-.75-.14-1.1c.23-.35.67-.48 1.06-.34l2.36.85l2.36-.85c.39-.14.83-.01 1.06.34Z" />
-            </svg>
-        ),
-        heartIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A5.48 5.48 0 0 1 7.5 3C9.24 3 11 4.4 11.25 4.71A5.454 5.454 0 0 1 16.5 3C19.54 3 22 5.44 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35Z" />
-            </svg>
-        )
-    },
-    {
-        id: 3,
-        title: "City Center Mall",
-        rating: "4.1/5",
-        ratingCount: "9",
-        category: "Shopping",
-        address: "Chausseestraße 29, 10115 Berlin",
-        website: "www.example.com",
-        phone: "+49 30 00000000",
-        openStatus: 'Open at 10am',
-        closeStatus: 'Close Now',
-        imageUrl: 'https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/shopping-1.jpg',
-        categoryIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M22 4v2H2V4h8.5l.71-.71A.996.996 0 0 1 12 3c.28 0 .53.11.71.29L13.5 4H22m-1 3c.56 0 1 .45 1 1v4.16c-.32-.1-.66-.16-1-.16c-.69 0-1.34.17-1.91.46L18 10h-5V8H3v7h7.05l-1.21 1.21l1.42 1.42L12 16.1l1.75 1.74l1.42-1.42L13.95 15H16v3h-1.59l3.57 3.57c.39.39.39 1.02 0 1.41c-.39.39-1.02.39-1.41 0l-5.54-5.54a.984.984 0 0 1 0-1.41l5.54-5.54c.39-.39 1.02-.39 1.41 0c.39.39.39 1.02 0 1.41l-.6.6c.44.46.82.98 1.1 1.57c.21-.03.43-.04.65-.04c.68 0 1.34.13 1.95.37V8c0-.55.45-1 1-1M2 16v2h4v-2H2m8 0v2h4v-2h-4m10 0v2h4v-2h-4Z" />
-            </svg>
-        ),
-        heartIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A5.48 5.48 0 0 1 7.5 3C9.24 3 11 4.4 11.25 4.71A5.454 5.454 0 0 1 16.5 3C19.54 3 22 5.44 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35Z" />
-            </svg>
-        )
-    }
-];
-const upcomingcards = [
-    {
-        id: 1,
-        title: "Rock&Roll Concert",
-        dateRange: "12-15 NOV",
-        location: "Adirondack, New York, USA",
-        imageUrl: "https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/event-1.jpg",
-        icon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.25em" height="1.25em" viewBox="0 0 24 24" class="mr-2">
-                <path fill="currentColor" d="M12 2C8.14 2 5 5.14 5 9c0 4.92 5 11 7 11s7-6.08 7-11c0-3.86-3.14-7-7-7m0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5Z" />
-            </svg>
-        ),
-        heartIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.3em" height="1.3em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.5 12.572L12 20l-7.5-7.428A5 5 0 1 1 12 6.006a5 5 0 1 1 7.5 6.572" /></svg>
-
-        )
-    },
-    {
-        id: 2,
-        title: "Winter Concert",
-        dateRange: "21 NOV",
-        location: "Brooklyn, New York, USA",
-        imageUrl: "https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/event-2.jpg",
-        icon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.25em" height="1.25em" viewBox="0 0 24 24" class="mr-2">
-                <path fill="currentColor" d="M12 2C8.14 2 5 5.14 5 9c0 4.92 5 11 7 11s7-6.08 7-11c0-3.86-3.14-7-7-7m0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5Z" />
-            </svg>
-        ),
-        heartIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.3em" height="1.3em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.5 12.572L12 20l-7.5-7.428A5 5 0 1 1 12 6.006a5 5 0 1 1 7.5 6.572" /></svg>
-
-        )
-    },
-    {
-        id: 3,
-        title: "Concerts For No Racism",
-        dateRange: "17-18 Dec",
-        location: "Boston, New York, USA",
-        imageUrl: "https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/event-3.jpg",
-        icon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.25em" height="1.25em" viewBox="0 0 24 24" class="mr-2">
-                <path fill="currentColor" d="M12 2C8.14 2 5 5.14 5 9c0 4.92 5 11 7 11s7-6.08 7-11c0-3.86-3.14-7-7-7m0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5Z" />
-            </svg>
-        ),
-        heartIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.3em" height="1.3em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.5 12.572L12 20l-7.5-7.428A5 5 0 1 1 12 6.006a5 5 0 1 1 7.5 6.572" /></svg>
-
-        )
-    }
-];
-
-const blogs = [
+// Convert blogs array
+const blogs: Blog[] = [
     {
         id: 1,
         title: "Open Air Concerts",
@@ -261,64 +319,160 @@ const blogs = [
                 </svg>
             )
         }
+    }
+    // Add additional blog objects here
+];
+
+// Convert blogPosts array
+const blogPosts: BlogPost[] = [
+    {
+        id: 1,
+        title: "Samsung Galaxy Ring: The Future of Health Monitoring",
+        date: "Thu Sep 19 2024",
+        description: "Samsung has done it again! At the Galaxy Unpacked event, the tech giant unveiled one of its most anticipated gadgets...",
+        tag: "Tech",
+        imageUrl: "https://via.placeholder.com/400x250"
     },
     {
         id: 2,
-        title: "Rock Music Festival",
-        imageUrl: "https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/event-2.jpg",
-        author: "John Doe",
-        date: "15 Nov, 2027",
-        category: "Rock",
-        description: "Join us for an epic rock festival featuring top bands and artists. Experience the best of rock music live!",
-        detailsLink: "#",
-        icons: {
-            authorIcon: (
-                <svg className='text-orange-600 mr-2' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M7.5 6.5C7.5 8.981 9.519 11 12 11s4.5-2.019 4.5-4.5S14.481 2 12 2S7.5 4.019 7.5 6.5M20 21h1v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1z" />
-                </svg>
-            ),
-            dateIcon: (
-                <svg className='text-orange-600 mr-2' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20">
-                    <path fill="currentColor" d="M5.673 0a.7.7 0 0 1 .7.7v1.309h7.517v-1.3a.7.7 0 0 1 1.4 0v1.3H18a2 2 0 0 1 2 1.999v13.993A2 2 0 0 1 18 20H2a2 2 0 0 1-2-1.999V4.008a2 2 0 0 1 2-1.999h2.973V.699a.7.7 0 0 1 .7-.699M1.4 7.742v10.259a.6.6 0 0 0 .6.6h16a.6.6 0 0 0 .6-.6V7.756zm5.267 6.877v1.666H5v-1.666zm4.166 0v1.666H9.167v-1.666zm4.167 0v1.666h-1.667v-1.666zm-8.333-3.977v1.666H5v-1.666zm4.166 0v1.666H9.167v-1.666zm4.167 0v1.666h-1.667v-1.666zM4.973 3.408H2a.6.6 0 0 0-.6.6v2.335l17.2.014V4.008a.6.6 0 0 0-.6-.6h-2.71v.929a.7.7 0 0 1-1.4 0v-.929H6.373v.92a.7.7 0 0 1-1.4 0z" />
-                </svg>
-            ),
-            categoryIcon: (
-                <svg className='text-orange-600 mr-2' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512">
-                    <path fill="currentColor" d="m345 39.1l127.8 129.3c52.4 53 52.4 138.2 0 191.2l-112 113.3c-9.3 9.4-24.5 9.5-33.9.2s-9.5-24.5-.2-33.9l111.9-113.3c33.9-34.3 33.9-89.4 0-123.7L310.9 72.9c-9.3-9.4-9.2-24.6.2-33.9s24.6-9.2 33.9.2zM0 229.5V80c0-26.5 21.5-48 48-48h149.5c17 0 33.3 6.7 45.3 18.7l168 168c25 25 25 65.5 0 90.5L277.3 442.7c-25 25-65.5 25-90.5 0l-168-168C6.7 262.7 0 246.5 0 229.5M144 144a32 32 0 1 0-64 0a32 32 0 1 0 64 0" />
-                </svg>
-            )
-        }
+        title: "Apple's New Vision: What We Know So Far",
+        date: "Mon Aug 18 2024",
+        description: "Apple has announced a bold new vision for its product lineup, focusing on innovative technologies and sustainability...",
+        tag: "Tech",
+        imageUrl: "https://via.placeholder.com/400x250"
+    }
+    // Add additional blogPost objects here
+];
+
+// Convert BlogCardsData array
+const BlogCardsData: BlogCard[] = [
+    {
+        id: 1,
+        title: "Facil Restaurant",
+        author: "Mark Harmisson",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dignissimos tempora magnam ratione hic officia enim.",
+        date: "10 Oct, 2027",
+        category: "Restaurant",
+        imageUrl: 'https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/restaurent-3.jpg',
+        authorIcon: (
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12 12c2.7 0 4.86-2.16 4.86-4.86S14.7 2.28 12 2.28 7.14 4.44 7.14 7.14 9.3 12 12 12zm0 2.28c-3.24 0-9.72 1.62-9.72 4.86v1.62h19.44v-1.62c0-3.24-6.48-4.86-9.72-4.86z" />
+            </svg>
+        ),
+        calendarIcon: (
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 21c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H5V10h14v11z" />
+            </svg>
+        ),
+        categoryIcon: (
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12 2a5 5 0 0 0-5 5v3H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V11a1 1 0 0 0-1-1h-3V7a5 5 0 0 0-5-5Zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3ZM6 12h12v8H6v-8Zm4 2v4h2v-4h-2Zm4 0v4h2v-4h-2Z" />
+            </svg>
+        )
+    },
+    {
+        id: 2,
+        title: "Facil Restaurant",
+        author: "Mark Harmisson",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dignissimos tempora magnam ratione hic officia enim.",
+        date: "10 Oct, 2027",
+        category: "Restaurant",
+        imageUrl: 'https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/restaurent-3.jpg',
+        authorIcon: (
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12 12c2.7 0 4.86-2.16 4.86-4.86S14.7 2.28 12 2.28 7.14 4.44 7.14 7.14 9.3 12 12 12zm0 2.28c-3.24 0-9.72 1.62-9.72 4.86v1.62h19.44v-1.62c0-3.24-6.48-4.86-9.72-4.86z" />
+            </svg>
+        ),
+        calendarIcon: (
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 21c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H5V10h14v11z" />
+            </svg>
+        ),
+        categoryIcon: (
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12 2a5 5 0 0 0-5 5v3H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V11a1 1 0 0 0-1-1h-3V7a5 5 0 0 0-5-5Zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3ZM6 12h12v8H6v-8Zm4 2v4h2v-4h-2Zm4 0v4h2v-4h-2Z" />
+            </svg>
+        )
     },
     {
         id: 3,
-        title: "Classical Music Evening",
-        imageUrl: "https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/event-3.jpg",
-        author: "Jane Smith",
-        date: "20 Dec, 2027",
-        category: "Classical",
-        description: "Experience an enchanting evening with classical music performances from renowned artists in a serene setting.",
-        detailsLink: "#",
-        icons: {
-            authorIcon: (
-                <svg className='text-orange-600 mr-2' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M7.5 6.5C7.5 8.981 9.519 11 12 11s4.5-2.019 4.5-4.5S14.481 2 12 2S7.5 4.019 7.5 6.5M20 21h1v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1z" />
-                </svg>
-            ),
-            dateIcon: (
-                <svg className='text-orange-600 mr-2' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20">
-                    <path fill="currentColor" d="M5.673 0a.7.7 0 0 1 .7.7v1.309h7.517v-1.3a.7.7 0 0 1 1.4 0v1.3H18a2 2 0 0 1 2 1.999v13.993A2 2 0 0 1 18 20H2a2 2 0 0 1-2-1.999V4.008a2 2 0 0 1 2-1.999h2.973V.699a.7.7 0 0 1 .7-.699M1.4 7.742v10.259a.6.6 0 0 0 .6.6h16a.6.6 0 0 0 .6-.6V7.756zm5.267 6.877v1.666H5v-1.666zm4.166 0v1.666H9.167v-1.666zm4.167 0v1.666h-1.667v-1.666zm-8.333-3.977v1.666H5v-1.666zm4.166 0v1.666H9.167v-1.666zm4.167 0v1.666h-1.667v-1.666zM4.973 3.408H2a.6.6 0 0 0-.6.6v2.335l17.2.014V4.008a.6.6 0 0 0-.6-.6h-2.71v.929a.7.7 0 0 1-1.4 0v-.929H6.373v.92a.7.7 0 0 1-1.4 0z" />
-                </svg>
-            ),
-            categoryIcon: (
-                <svg className='text-orange-600 mr-2' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512">
-                    <path fill="currentColor" d="m345 39.1l127.8 129.3c52.4 53 52.4 138.2 0 191.2l-112 113.3c-9.3 9.4-24.5 9.5-33.9.2s-9.5-24.5-.2-33.9l111.9-113.3c33.9-34.3 33.9-89.4 0-123.7L310.9 72.9c-9.3-9.4-9.2-24.6.2-33.9s24.6-9.2 33.9.2zM0 229.5V80c0-26.5 21.5-48 48-48h149.5c17 0 33.3 6.7 45.3 18.7l168 168c25 25 25 65.5 0 90.5L277.3 442.7c-25 25-65.5 25-90.5 0l-168-168C6.7 262.7 0 246.5 0 229.5M144 144a32 32 0 1 0-64 0a32 32 0 1 0 64 0" />
-                </svg>
-            )
-        }
+        title: "Facil Restaurant",
+        author: "Mark Harmisson",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dignissimos tempora magnam ratione hic officia enim.",
+        date: "10 Oct, 2027",
+        category: "Restaurant",
+        imageUrl: 'https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/restaurent-3.jpg',
+        authorIcon: (
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12 12c2.7 0 4.86-2.16 4.86-4.86S14.7 2.28 12 2.28 7.14 4.44 7.14 7.14 9.3 12 12 12zm0 2.28c-3.24 0-9.72 1.62-9.72 4.86v1.62h19.44v-1.62c0-3.24-6.48-4.86-9.72-4.86z" />
+            </svg>
+        ),
+        calendarIcon: (
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 21c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H5V10h14v11z" />
+            </svg>
+        ),
+        categoryIcon: (
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12 2a5 5 0 0 0-5 5v3H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V11a1 1 0 0 0-1-1h-3V7a5 5 0 0 0-5-5Zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3ZM6 12h12v8H6v-8Zm4 2v4h2v-4h-2Zm4 0v4h2v-4h-2Z" />
+            </svg>
+        )
     }
+    // Add additional BlogCard objects here
 ];
-
-const listingCardData = [
+  
+  const listingcards: ListingCard[] = [
+    {
+      id: 1,
+      title: "Facil Restaurant",
+      rating: "4.3/5",
+      ratingCount: "22",
+      category: "Restaurant",
+      address: "Potsdamer Straße 3, 10785 Berlin",
+      website: "www.example.com",
+      phone: "+49 30 00000000",
+      openStatus: "Open at 9pm tomorrow",
+      closeStatus: "Close Now",
+      imageUrl:
+        "https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/restaurent-3.jpg",
+      categoryIcon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M12 2a5 5 0 0 0-5 5v3H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V11a1 1 0 0 0-1-1h-3V7a5 5 0 0 0-5-5Zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3ZM6 12h12v8H6v-8Zm4 2v4h2v-4h-2Zm4 0v4h2v-4h-2Z" />
+        </svg>
+      ),
+      heartIcon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A5.48 5.48 0 0 1 7.5 3C9.24 3 11 4.4 11.25 4.71A5.454 5.454 0 0 1 16.5 3C19.54 3 22 5.44 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35Z" />
+        </svg>
+      )
+    },
+    {
+      id: 2,
+      title: "Amikon Blue Hotel",
+      rating: "4.3/5",
+      ratingCount: "22",
+      category: "Hotel",
+      address: "Landsberger Allee 106, 10369 Berlin",
+      website: "www.example.com",
+      phone: "+49 30 00000000",
+      openStatus: "Open Now",
+      closeStatus: "Close at 11pm",
+      imageUrl:
+        "https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/moviehall.jpg",
+      categoryIcon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M7 4v3H3V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1Zm10 0v3h-4V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1ZM3 8h18v11H3V8Zm9 4a2 2 0 0 0-2 2v2h4v-2a2 2 0 0 0-2-2ZM8 17v-3a4 4 0 1 1 8 0v3h2v2H6v-2h2Zm8.83-7c.23.35.17.81-.14 1.1l-1.92 1.75l.48 2.44c.08.41-.15.83-.53 1.04c-.38.21-.84.16-1.16-.12L12 14.8l-1.56 1.38c-.32.28-.78.33-1.16.12c-.38-.21-.61-.63-.53-1.04l.48-2.44L7.3 11.1c-.31-.29-.37-.75-.14-1.1c.23-.35.67-.48 1.06-.34l2.36.85l2.36-.85c.39-.14.83-.01 1.06.34Z" />
+        </svg>
+      ),
+      heartIcon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A5.48 5.48 0 0 1 7.5 3C9.24 3 11 4.4 11.25 4.71A5.454 5.454 0 0 1 16.5 3C19.54 3 22 5.44 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35Z" />
+        </svg>
+      )
+    }
+  ];
+  
+  const listingCardData: { id: number; title: string; imageUrl: string; address: string; website: string; phone: string; openStatus: string; closeStatus: string; rating: number; }[] = [
     {
         id: 1,
         title: 'Facil Restaurant',
@@ -429,187 +583,7 @@ const listingCardData = [
         closeStatus: 'Close Now',
         rating: 29,
     }
-];
-
-const ListDetailImages = [
-    'https://swiperjs.com/demos/images/nature-1.jpg',
-    'https://swiperjs.com/demos/images/nature-2.jpg',
-    'https://swiperjs.com/demos/images/nature-3.jpg',
-    'https://swiperjs.com/demos/images/nature-4.jpg',
-    'https://swiperjs.com/demos/images/nature-5.jpg',
-    'https://swiperjs.com/demos/images/nature-6.jpg',
-    'https://swiperjs.com/demos/images/nature-7.jpg',
-    'https://swiperjs.com/demos/images/nature-8.jpg',
-    'https://swiperjs.com/demos/images/nature-9.jpg',
-    'https://swiperjs.com/demos/images/nature-10.jpg',
-];
-const spaOptions = [
-    {
-        id: 'option1',
-        title: 'General Spa Admission for One',
-        originalPrice: '$60',
-        discountedPrice: '$42',
-        finalPrice: '$37.80',
-        discountPercentage: '-37%',
-        extraOffer: 'Extra $4.20 off, today only',
-        finalDiscountedPrice: '$34.02',
-        codeInfo: 'with code HURRYNOW, 7 hours left',
-        purchaseInfo: '25,000+ bought',
-        giftIcon: true,
-    },
-    {
-        id: 'option2',
-        title: 'Couple Spa Package',
-        originalPrice: '$120',
-        discountedPrice: '$85',
-        finalPrice: '$78.50',
-        discountPercentage: '-35%',
-        extraOffer: 'Extra $7.50 off, today only',
-        finalDiscountedPrice: '$71.00',
-        codeInfo: 'with code COUPLESPA, 6 hours left',
-        purchaseInfo: '15,000+ bought',
-        giftIcon: true,
-    },
-    {
-        id: 'option3',
-        title: 'Luxury Spa Day for Two',
-        originalPrice: '$200',
-        discountedPrice: '$150',
-        finalPrice: '$142.50',
-        discountPercentage: '-29%',
-        extraOffer: 'Extra $10.00 off, today only',
-        finalDiscountedPrice: '$132.50',
-        codeInfo: 'with code LUXURYSPA, 5 hours left',
-        purchaseInfo: '10,000+ bought',
-        giftIcon: false,
-    },
-
-];
-const amenities = [
-    "Air conditioning",
-    "Green Fields",
-    "Bathroom",
-    "Kid's Play Zone",
-    "Private Room",
-    "Music",
-    "Kitchen",
-    "Fire Work"
-];
-
-const blogPosts = [
-    {
-        id: 1,
-        title: "Samsung Galaxy Ring: The Future of Health Monitoring",
-        date: "Thu Sep 19 2024",
-        description:
-            "Samsung has done it again! At the Galaxy Unpacked event, the tech giant unveiled one of its most anticipated gadgets...",
-        tag: "Tech",
-        imageUrl: "https://via.placeholder.com/400x250",
-    },
-    {
-        id: 2,
-        title: "Apple's New Vision: What We Know So Far",
-        date: "Mon Aug 18 2024",
-        description:
-            "Apple has announced a bold new vision for its product lineup, focusing on innovative technologies and sustainability...",
-        tag: "Tech",
-        imageUrl: "https://via.placeholder.com/400x250",
-    },
-    {
-        id: 3,
-        title: "Exploring the Future of AI and Machine Learning",
-        date: "Fri Oct 20 2024",
-        description:
-            "Artificial Intelligence and Machine Learning are transforming industries. Let's explore the future of AI and what to expect...",
-        tag: "AI",
-        imageUrl: "https://via.placeholder.com/400x250",
-    },
-];
-const usersTableData = [
-    { id: 1, name: "arsam javeed", email: "arsam@gmail.com", contact: "12345", address: "user" },
-    { id: 2, name: "hamza hahsmi", email: "hamzahashmi640@gmail.com", contact: "+923406", address: "user" },
-    { id: 3, name: "muhammad ali", email: "ali@zextons.co.uk", contact: "+923406", address: "admin" },
-    { id: 4, name: "Nouman Iqbal", email: "numan123@gmail.com", contact: "0318768", address: "user" },
-    { id: 5, name: "Therese Homenick", email: "your.email+fakedata67858@gmail.com", contact: "321-583-0166", address: "user" },
-    { id: 6, name: "hamza hashmi", email: "fakedata17669@gmail.com", contact: "575", address: "user" },
-    { id: 7, name: "Muhammad Ali", email: "ma.tahir01@gmail.com", contact: "07760509600", address: "user" },
-    { id: 8, name: "Kashan Khan", email: "kashank0810@gmail.com", contact: "03338450866", address: "user" },
-    { id: 9, name: "hamza hahsmi", email: "hamzajahangir086@gmail.com", contact: "033263732828", address: "user" },
-    { id: 10, name: "Hamza Jahangir", email: "hamzashmi12@gmail.com", contact: "034063732828", address: "user" },
-];
-const BlogCardsData = [
-    {
-        id: 1,
-        title: "Facil Restaurant",
-        author: "Mark Harmisson",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dignissimos tempora magnam ratione hic officia enim.",
-        date: "10 Oct, 2027",
-        category: "Restaurant",
-        imageUrl: 'https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/restaurent-3.jpg',
-        authorIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12 12c2.7 0 4.86-2.16 4.86-4.86S14.7 2.28 12 2.28 7.14 4.44 7.14 7.14 9.3 12 12 12zm0 2.28c-3.24 0-9.72 1.62-9.72 4.86v1.62h19.44v-1.62c0-3.24-6.48-4.86-9.72-4.86z" />
-            </svg>
-        ),
-        calendarIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 21c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H5V10h14v11z" />
-            </svg>
-        ),
-        categoryIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12 2a5 5 0 0 0-5 5v3H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V11a1 1 0 0 0-1-1h-3V7a5 5 0 0 0-5-5Zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3ZM6 12h12v8H6v-8Zm4 2v4h2v-4h-2Zm4 0v4h2v-4h-2Z" />
-            </svg>
-        )
-    },
-    {
-        id: 2,
-        title: "Amikon Blue Hotel",
-        author: "Mark Harmisson",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dignissimos tempora magnam ratione hic officia enim.",
-        date: "10 Oct, 2027",
-        category: "Hotel",
-        imageUrl: 'https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/moviehall.jpg',
-        authorIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12 12c2.7 0 4.86-2.16 4.86-4.86S14.7 2.28 12 2.28 7.14 4.44 7.14 7.14 9.3 12 12 12zm0 2.28c-3.24 0-9.72 1.62-9.72 4.86v1.62h19.44v-1.62c0-3.24-6.48-4.86-9.72-4.86z" />
-            </svg>
-        ),
-        calendarIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 21c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H5V10h14v11z" />
-            </svg>
-        ),
-        categoryIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M7 4v3H3V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1Zm10 0v3h-4V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1ZM3 8h18v11H3V8Zm9 4a2 2 0 0 0-2 2v2h4v-2a2 2 0 0 0-2-2ZM8 17v-3a4 4 0 1 1 8 0v3h2v2H6v-2h2Zm8.83-7c.23.35.17.81-.14 1.1l-1.92 1.75l.48 2.44c.08.41-.15.83-.53 1.04c-.38.21-.84.16-1.16-.12L12 14.8l-1.56 1.38c-.32.28-.78.33-1.16.12c-.38-.21-.61-.63-.53-1.04l.48-2.44L7.3 11.1c-.31-.29-.37-.75-.14-1.1c.23-.35.67-.48 1.06-.34l2.36.85l2.36-.85c.39-.14.83-.01 1.06.34Z" />
-            </svg>
-        )
-    },
-    {
-        id: 3,
-        title: "City Center Mall",
-        author: "Mark Harmisson",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dignissimos tempora magnam ratione hic officia enim.",
-        date: "10 Oct, 2027",
-        category: "Shopping",
-        imageUrl: 'https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/shopping-1.jpg',
-        authorIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12 12c2.7 0 4.86-2.16 4.86-4.86S14.7 2.28 12 2.28 7.14 4.44 7.14 7.14 9.3 12 12 12zm0 2.28c-3.24 0-9.72 1.62-9.72 4.86v1.62h19.44v-1.62c0-3.24-6.48-4.86-9.72-4.86z" />
-            </svg>
-        ),
-        calendarIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 21c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H5V10h14v11z" />
-            </svg>
-        ),
-        categoryIcon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M22 4v2H2V4h8.5l.71-.71A.996.996 0 0 1 12 3c.28 0 .53.11.71.29L13.5 4H22m-1 3c.56 0 1 .45 1 1v4.16c-.32-.1-.66-.16-1-.16c-.69 0-1.34.17-1.91.46L18 10h-5V8H3v7h7.05l-1.21 1.21l1.42 1.42L12 16.1l1.75 1.74l1.42-1.42L13.95 15H16v3h-1.59l3.57 3.57c.39.39.39 1.02 0 1.41c-.39.39-1.02.39-1.41 0l-5.54-5.54a.984.984 0 0 1 0-1.41l5.54-5.54c.39-.39 1.02-.39 1.41 0c.39.39.39 1.02 0 1.41l-.6.6c.44.46.82.98 1.1 1.57c.21-.03.43-.04.65-.04c.68 0 1.34.13 1.95.37V8c0-.55.45-1 1-1M2 16v2h4v-2H2m8 0v2h4v-2h-4m10 0v2h4v-2h-4Z" />
-            </svg>
-        )
-    }
-];
-
-export { listings, categories, workingcards, listingcards, upcomingcards, blogs, listingCardData, ListDetailImages, spaOptions, amenities, blogPosts, usersTableData, BlogCardsData };
+  ];
+  
+  export { listingcards, listingCardData,  blogs, blogPosts, BlogCardsData, categories, listings, upcomingCards, workingCards };
+  

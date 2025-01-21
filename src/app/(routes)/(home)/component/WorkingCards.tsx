@@ -1,5 +1,5 @@
 import React from 'react';
-import { workingcards } from "../../../data/Data";
+import { workingCards } from "../../../data/Data";
 
 interface WorkingCard {
     id: number;
@@ -18,7 +18,7 @@ const WorkingCards: React.FC = () => {
                     <p className="text-gray-700 mt-2 text-xl max-w-screen-sm">It&apos;s really simple. Follow the steps and get started today!</p>
                 </div>
                 <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 mx-auto px-4">
-                    {workingcards.map((carddata: WorkingCard) => (
+                    {workingCards.map((carddata: WorkingCard) => (
                         <div key={carddata.id} className="bg-white px-4 pt-8 pb-10 rounded-lg shadow-lg hover:shadow-2xl duration-300 relative text-center hover:text-orange-100 group">
                             <div className="absolute top-0 left-0 text-7xl text-gray-200 group-hover:text-orange-100 transition-colors duration-300">
                                 {carddata.step}

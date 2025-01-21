@@ -1,5 +1,5 @@
 import React from 'react';
-import { upcomingcards } from "../../../data/Data";
+import { upcomingCards } from "../../../data/Data";
 import Image from 'next/image';
 
 interface UpcomingCard {
@@ -18,7 +18,7 @@ const UpcomingEvents: React.FC = () => {
                 <p className="text-gray-700 mt-2 text-xl max-w-screen-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam voluptatem nam rem.</p>
             </div>
             <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 mx-5 gap-4">
-                {upcomingcards.map((upcomingcard: UpcomingCard) => (
+                {upcomingCards.map((upcomingcard: UpcomingCard) => (
                     <div key={upcomingcard.id} className="bg-white rounded-none shadow-md hover:shadow-2xl duration-300">
                         <div className="relative">
                             <Image className="w-full h-60 object-cover rounded-t-lg" src={upcomingcard.imageUrl} alt="Event Image" width={384} height={240} />

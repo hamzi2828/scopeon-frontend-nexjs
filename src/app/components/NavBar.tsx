@@ -72,7 +72,7 @@ const NavBar = () => {
         {/* Desktop Navigation */}
         <ul className="lg:flex hidden space-x-9 text-white">
           <li className="text-xl block py-2 border-b-2 border-transparent hover:text-orange-500 hover:after:bg-orange-500 hover:after:w-full">
-            <NavLink href="/recentviewed">
+            <NavLink href="/recentViewed">
               <IoEyeOutline className="text-2xl" />
             </NavLink>
           </li>
