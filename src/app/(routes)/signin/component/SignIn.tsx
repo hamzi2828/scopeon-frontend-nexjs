@@ -2,6 +2,11 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // Use Next.js router for navigation
+import { loginUser } from "../service/signinService"; // Import the loginUser function
+import { LoginErrorType, LoginRequestType } from "../types/types"; // Import the LoginErrorType
+import Cookies from "js-cookie";
+import {getUserIdFromToken, getUserDetailsFromToken} from "../../../../helper/helper"
+
 
 const SignIn: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("account");
@@ -11,6 +16,8 @@ const SignIn: React.FC = () => {
   const [email2, setEmail2] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [password2, setPassword2] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false); // Add loading state
+  const [error, setError] = useState<string | null>(null); // Add error state
 
   const router = useRouter(); // Replace useNavigate with useRouter
 
@@ -30,18 +37,41 @@ const SignIn: React.FC = () => {
     setEmail2("");
   };
 
-  const handleLogin = () => {
-    if (email === "arsam@dashboard.com" && password === "12345") {
-      router.push("/AdminDashboard"); // Navigate using Next.js router
-    } else {
-      alert("Incorrect email or password");
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert("Please enter both email and password");
+      return;
+    }
+  
+    setLoading(true);
+  
+    const loginData: LoginRequestType = { email, password }; // Prepare the login data
+  
+    try {
+      const response = await loginUser(loginData); // Use loginData for the login request
+      alert(response.message);
+      Cookies.set("token", response.token, { expires: 7, path: "/" }); // Set token with a 7-day expiration
+      
+    } catch (err) {
+      // Assuming `err` has a `statusCode` and `message`, or provide defaults
+      const errorResponse: LoginErrorType = {
+        statusCode: err instanceof Error && err.stack ? 500 : 0,  // Provide a default status code, or extract it from `err`
+        message: err instanceof Error ? err.message : "An error occurred during login"
+      };
+      setError(errorResponse.message); // Set the error using the LoginErrorType
+    } finally {
+      setLoading(false);
     }
   };
+  
+
 
   return (
     <div>
       <div className="w-full max-w-screen-sm mx-auto text-center">
         <h1 className="text-3xl font-bold my-10">Sign in to score great deals!</h1>
+        
+        {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
         <div className="flex justify-between border-b mb-6 mx-5 md:mx-0">
           <button
             className={`py-2 lg:px-20 md:px-14 ${

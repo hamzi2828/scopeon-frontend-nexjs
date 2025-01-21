@@ -1,4 +1,4 @@
-//src/app/(routes)/Signin/page.tsx
+//src/app/(routes)/signin/page.tsx
 import NavBar from "../../components/NavBar";
 import Footer from "../../components/Footer";
 import SignIn from "./component/SignIn";

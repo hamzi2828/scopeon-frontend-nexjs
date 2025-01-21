@@ -1,7 +1,10 @@
+//src/app/(routes)/signup/component/SignUp.tsx
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaGoogle, FaFacebook, FaInstagram } from "react-icons/fa";
+import { registerUser } from "../service/signupService";
+import { RegisterErrorType } from "../types/types";
 
 const SignUpCustomer: React.FC = () => {
   const [fullName, setFullName] = useState<string>("");
@@ -10,6 +13,8 @@ const SignUpCustomer: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false); // To handle loading state
+  const [error, setError] = useState<string | null>(null); // For displaying errors
 
   const router = useRouter();
 
@@ -25,7 +30,7 @@ const SignUpCustomer: React.FC = () => {
     setter("");
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (!fullName || !email || !password || !confirmPassword) {
       alert("All fields are required");
       return;
@@ -36,9 +41,29 @@ const SignUpCustomer: React.FC = () => {
       return;
     }
 
-    alert("Sign up successful!");
-    router.push("/welcome");
+    setLoading(true); // Set loading state to true
+
+    try {
+      const userData = {
+        fullname: fullName,
+        email: email,
+        password: password,
+      };
+
+      const response = await registerUser(userData); // Call the registerUser function
+      if (response) {
+        alert("Sign up successful!");
+        router.push("/signin"); // Redirect to login page
+      }
+    } catch (err: unknown) {
+      const registerError = err as RegisterErrorType;
+      
+      setError(registerError.message); // Set error message
+    } finally {
+      setLoading(false); // Reset loading state after the process
+    }
   };
+
 
   return (
     <div className="w-full max-w-screen-sm mx-auto text-center">
@@ -137,9 +162,12 @@ const SignUpCustomer: React.FC = () => {
         <button
           className="w-full bg-orange-600 text-white text-lg font-semibold py-2 rounded-lg hover:bg-orange-700 mb-5 text-center block"
           onClick={handleSignUp}
+          disabled={loading} // Disable the button when loading
         >
-          Sign Up
+          {loading ? "Signing Up..." : "Sign Up"}
         </button>
+        {error && <p className="text-red-500">{error}</p>} {/* Display error message */}
+
         <p className="text-md text-gray-600 text-center">Or Sign Up with</p>
         <div className="flex justify-center items-center my-6 gap-4">
           <button className="flex justify-center items-center rounded-lg md:px-10">
