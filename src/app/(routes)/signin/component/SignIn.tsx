@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // Use Next.js router for navigation
 import { loginUser } from "../service/signinService"; // Import the loginUser function
-import { LoginErrorType, LoginRequestType } from "../types/types"; // Import the LoginErrorType
+import { LoginErrorType, LoginRequestType, LoginResponseType } from "../types/types"; // Import the LoginErrorType
 import Cookies from "js-cookie";
-import {getUserIdFromToken, getUserDetailsFromToken} from "../../../../helper/helper"
+import {getTokenFromCookies ,getUserIdFromToken, getUserDetailsFromToken} from "../../../../helper/helper"
 
 
 const SignIn: React.FC = () => {
@@ -48,10 +48,16 @@ const SignIn: React.FC = () => {
     const loginData: LoginRequestType = { email, password }; // Prepare the login data
   
     try {
-      const response = await loginUser(loginData); // Use loginData for the login request
+      const response: LoginResponseType = await loginUser(loginData); // Use loginData for the login request
       alert(response.message);
       Cookies.set("token", response.token, { expires: 7, path: "/" }); // Set token with a 7-day expiration
-      
+      let userDetails = getUserDetailsFromToken();
+      console.log(userDetails?.role.roleName);
+      if (userDetails?.role.roleName === "admin") {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/");
+      }
     } catch (err) {
       // Assuming `err` has a `statusCode` and `message`, or provide defaults
       const errorResponse: LoginErrorType = {

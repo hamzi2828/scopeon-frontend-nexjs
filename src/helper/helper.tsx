@@ -1,9 +1,10 @@
 //src/helper/helper.tsx
 
 
+
 import Cookies from 'js-cookie';
 import {jwtDecode} from 'jwt-decode';
-
+import { UserDetails } from '../types/types';
 
 export const getTokenFromCookies = (): string | null => {
     const token = Cookies.get('token');
@@ -17,14 +18,14 @@ export const getTokenFromCookies = (): string | null => {
     
     try {
       const decoded: any = jwtDecode(token); // Decode the token      
-      return decoded.userId || null; // Assuming user ID is stored as 'userId' in the token
+      return decoded.id || null; // Assuming user ID is stored as 'userId' in the token
     } catch (error) {
       console.error('Failed to decode the token:', error);
       return null;
     }
   };
 
-export const getUserDetailsFromToken = (): { _id: string, fullname: string, email: string, role: string } | null => {
+export const getUserDetailsFromToken = (): UserDetails | null => {
   const token = Cookies.get('token');
   if (!token) return null;
 

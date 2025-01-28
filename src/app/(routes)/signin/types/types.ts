@@ -8,4 +8,9 @@ export type LoginErrorType = {
     statusCode: number;
     message: string;
   };
+
+  export type LoginResponseType = {
+    message: string;
+    token: string;
+  }
   
