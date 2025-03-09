@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { FaHome, FaBloggerB, FaUser, FaUsers, FaKey, FaChevronLeft, FaChevronRight, FaChevronDown } from "react-icons/fa";
+import { FaHome, FaBloggerB, FaUser, FaUsers, FaKey, FaChevronLeft, FaChevronRight, FaChevronDown, FaBox } from "react-icons/fa"; // Add FaBox for Products
 import Link from "next/link"; // Use Next.js Link for navigation
 import { usePathname } from "next/navigation"; // To determine the current active path
 
@@ -78,6 +78,17 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ setActiveContent }) => {
         >
           <FaUsers className="w-5 h-5 mr-2" />
           {!isCollapsed && <span>Users</span>}
+        </Link>
+        {/* Add Products Link */}
+        <Link
+          href="/admin/products"
+          className={`block py-2.5 px-4 flex items-center rounded transition duration-200 ${
+            isActive("/admin/products") ? "bg-gray-700" : "hover:bg-gray-700"
+          }`}
+          onClick={() => handleLinkClick("products")}
+        >
+          <FaBox className="w-5 h-5 mr-2" />
+          {!isCollapsed && <span>Products</span>}
         </Link>
         <div>
           <button
