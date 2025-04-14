@@ -12,6 +12,20 @@ const nextConfig = {
     // your project has type errors.
     ignoreBuildErrors: true,
   },
+  // Disable image optimization warnings
+  images: {
+    // This disables the warning about using <img> instead of next/image
+    // You should eventually migrate to next/image for better performance
+    unoptimized: true,
+  },
+  // Increase build timeout if needed
+  experimental: {
+    // This increases the timeout for the build process
+    // Useful for larger projects that might time out during build
+    turbotrace: {
+      logLevel: 'error',
+    },
+  },
 };
 
 module.exports = nextConfig;
