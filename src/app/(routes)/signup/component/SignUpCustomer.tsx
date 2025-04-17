@@ -4,10 +4,10 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaGoogle, FaFacebook, FaInstagram } from "react-icons/fa";
 import { registerUser } from "../service/signupService";
-import { RegisterErrorType } from "../types/types";
+import { ToastRoot, showToast } from "@/helper/toast";
 
 const SignUpCustomer: React.FC = () => {
-  const [fullName, setFullName] = useState<string>("");
+  const [fullName, setFullName] = useState<string>(""); 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -15,6 +15,7 @@ const SignUpCustomer: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false); // To handle loading state
   const [error, setError] = useState<string | null>(null); // For displaying errors
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
 
   const router = useRouter();
 
@@ -31,13 +32,14 @@ const SignUpCustomer: React.FC = () => {
   };
 
   const handleSignUp = async () => {
-    if (!fullName || !email || !password || !confirmPassword) {
-      alert("All fields are required");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      alert("Passwords do not match");
+    const errors: { [key: string]: string } = {};
+    if (!fullName) errors.fullName = "Full name is required";
+    if (!email) errors.email = "Email is required";
+    if (!password) errors.password = "Password is required";
+    if (!confirmPassword) errors.confirmPassword = "Confirm password is required";
+    if (password && confirmPassword && password !== confirmPassword) errors.confirmPassword = "Passwords do not match";
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
       return;
     }
 
@@ -48,17 +50,23 @@ const SignUpCustomer: React.FC = () => {
         fullname: fullName,
         email: email,
         password: password,
+        role: "customer"
       };
 
       const response = await registerUser(userData); // Call the registerUser function
       if (response) {
-        alert("Sign up successful!");
-        router.push("/signin"); // Redirect to login page
+        showToast("Sign up successful!", "success");
+        setTimeout(() => {
+          router.push("/signin"); // Redirect to login page
+        }, 1500);
       }
     } catch (err: unknown) {
-      const registerError = err as RegisterErrorType;
-      
-      setError(registerError.message); // Set error message
+      let message = "Registration failed";
+      if (err && typeof err === "object" && "message" in err && typeof (err as { message: unknown }).message === "string") {
+        message = (err as { message: string }).message;
+      }
+      showToast(message, "error");
+      setError(message); // Set error message
     } finally {
       setLoading(false); // Reset loading state after the process
     }
@@ -66,12 +74,18 @@ const SignUpCustomer: React.FC = () => {
 
 
   return (
-    <div className="w-full max-w-screen-sm mx-auto text-center">
-      <h1 className="text-3xl font-bold my-10">Sign Up as a Customer</h1>
+    <>
+      <ToastRoot />
+      <div className="w-full max-w-screen-sm mx-auto text-center">
+        <h1 className="text-3xl font-bold my-10">Sign Up as a Customer</h1>
       <div className="mt-4 mx-5">
         <div className="mb-6">
-          <div className="relative flex items-center border border-gray-300 rounded-lg px-4 py-2 mt-2">
+          <label htmlFor="fullName" className="block text-left font-medium text-gray-700 mb-1">
+            Full Name
+          </label>
+          <div className={`relative flex items-center border rounded-lg px-4 py-2 mt-2 ${fieldErrors.fullName ? "border-red-500" : "border-gray-300"}`}>
             <input
+              id="fullName"
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
@@ -87,11 +101,16 @@ const SignUpCustomer: React.FC = () => {
               </button>
             )}
           </div>
+          {fieldErrors.fullName && <p className="text-red-500 text-sm mt-1">{fieldErrors.fullName}</p>}
         </div>
 
         <div className="mb-6">
-          <div className="relative flex items-center border border-gray-300 rounded-lg px-4 py-2 mt-2">
+          <label htmlFor="email" className="block text-left font-medium text-gray-700 mb-1">
+            Email
+          </label>
+          <div className={`relative flex items-center border rounded-lg px-4 py-2 mt-2 ${fieldErrors.email ? "border-red-500" : "border-gray-300"}`}>
             <input
+              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -107,11 +126,16 @@ const SignUpCustomer: React.FC = () => {
               </button>
             )}
           </div>
+          {fieldErrors.email && <p className="text-red-500 text-sm mt-1">{fieldErrors.email}</p>}
         </div>
 
         <div className="mb-6">
-          <div className="flex items-center border border-gray-300 rounded-lg px-4 py-2 mt-2">
+          <label htmlFor="password" className="block text-left font-medium text-gray-700 mb-1">
+            Password
+          </label>
+          <div className={`flex items-center border rounded-lg px-4 py-2 mt-2 ${fieldErrors.password ? "border-red-500" : "border-gray-300"}`}>
             <input
+              id="password"
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -126,11 +150,16 @@ const SignUpCustomer: React.FC = () => {
               {showPassword ? "HIDE" : "SHOW"}
             </button>
           </div>
+          {fieldErrors.password && <p className="text-red-500 text-sm mt-1">{fieldErrors.password}</p>}
         </div>
 
         <div className="mb-6">
-          <div className="flex items-center border border-gray-300 rounded-lg px-4 py-2 mt-2">
+          <label htmlFor="confirmPassword" className="block text-left font-medium text-gray-700 mb-1">
+            Confirm Password
+          </label>
+          <div className={`flex items-center border rounded-lg px-4 py-2 mt-2 ${fieldErrors.confirmPassword ? "border-red-500" : "border-gray-300"}`}>
             <input
+              id="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -145,6 +174,7 @@ const SignUpCustomer: React.FC = () => {
               {showConfirmPassword ? "HIDE" : "SHOW"}
             </button>
           </div>
+          {fieldErrors.confirmPassword && <p className="text-red-500 text-sm mt-1">{fieldErrors.confirmPassword}</p>}
         </div>
 
         <p className="text-sm text-gray-600 mb-6 text-start">
@@ -182,6 +212,7 @@ const SignUpCustomer: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

@@ -3,17 +3,20 @@ import { RegisterErrorType } from "../types/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001"; // Use env variable, fallback to localhost
 
-export const registerUser = async (userData: {
+export interface RegisterUserPayload {
   fullname: string;
   email: string;
   password: string;
-  businessName: string;
-  businessAddress: string;
-  phoneNumber: string;
-  website: string;
-  businessType: string;
-  userType: string;
-}) => {
+  businessName?: string;
+  businessAddress?: string;
+  phoneNumber?: string;
+  website?: string;
+  businessType?: string;
+  userType?: string;
+  role?: string;
+}
+
+export const registerUser = async (userData: RegisterUserPayload) => {
   try {
     console.log("API_BASE_URL", API_BASE_URL);  // Log the API_BASE_URL
     const response = await axios.post(`${API_BASE_URL}/users/register`, userData);
