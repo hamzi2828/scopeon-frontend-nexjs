@@ -4,7 +4,7 @@
 
 import Cookies from 'js-cookie';
 import {jwtDecode} from 'jwt-decode';
-import { UserDetails } from '../types/types';
+import { UserDetails, UserRole } from '../types/types';
 
 export const getTokenFromCookies = (): string | null => {
     const token = Cookies.get('token');
