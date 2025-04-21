@@ -1,6 +1,7 @@
 import React from 'react';
 import { blogs } from '../../app/data/Data';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface Blog {
     id: number;
@@ -42,12 +43,12 @@ const Blogs: React.FC = () => {
                             <p className="text-gray-700 text-base mb-4 line-clamp-3">
                                 {event.description}
                             </p>
-                            <a href={event.detailsLink} className="flex items-center text-orange-500 font-semibold text-sm hover:tracking-widest duration-300">
+                            <Link href={`/blogdetail/${event.id}`} className="flex items-center text-orange-500 font-semibold text-sm hover:tracking-widest duration-300">
                                 View Details
                                 <svg className='ms-1' xmlns="http://www.w3.org/2000/svg" width="1.7em" height="1.7em" viewBox="0 0 24 24">
                                     <path fill="currentColor" d="M8.7 7.3c-.4-.4-1-.4-1.4 0s-.4 1 0 1.4l3.3 3.3l-3.3 3.3c-.2.2-.3.4-.3.7c0 .6.4 1 1 1c.3 0 .5-.1.7-.3l4-4c.4-.4.4-1 0-1.4zM16 7c-.6 0-1 .4-1 1v8c0 .6.4 1 1 1s1-.4 1-1V8c0-.6-.4-1-1-1" />
                                 </svg>
-                            </a>
+                            </Link>
                         </div>
 
                         {/* Footer Section */}
@@ -68,11 +69,9 @@ const Blogs: React.FC = () => {
 
             </div>
             <div className="flex justify-center mt-10">
-                <div className="custom-btn view-all-btn">
-                    <span>
-                        <a href="#!">see All</a>
-                    </span>
-                </div>
+                <Link href="/blogs" className="custom-btn view-all-btn">
+                    <span>See All</span>
+                </Link>
             </div>
         </div>
     );
