@@ -1,6 +1,12 @@
 "use client";
 import React, { useState, useRef, useMemo } from "react";
-import JoditEditor from "jodit-react"; // @ts-ignore
+import dynamic from "next/dynamic";
+
+// Dynamically import JoditEditor with no SSR
+const JoditEditor = dynamic(() => import("jodit-react"), {
+  ssr: false,
+});
+
 const MerchantDescription = ({ placeholder }: { placeholder: string }) => {
   const editor = useRef(null);
   const [content, setContent] = useState("");
@@ -46,11 +52,11 @@ const MerchantDescription = ({ placeholder }: { placeholder: string }) => {
         <ul className="list-disc pl-5 mt-2 text-gray-800">
           <li>What's included:</li>
           <ul className="list-disc pl-5">
-            <li>Chef’s surprise</li>
+            <li>Chef's surprise</li>
             <li>Seafood or paté appetiser</li>
             <li>Seasonal sorbét</li>
             <li>Fish entrée</li>
-            <li>Chef’s pastry selection</li>
+            <li>Chef's pastry selection</li>
           </ul>
         </ul>
       </div>
