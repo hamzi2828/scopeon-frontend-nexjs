@@ -1,29 +1,298 @@
 "use client";
 
-// import { FaUpload } from "react-icons/fa";
+import type React from "react";
+import { useState, useRef, useCallback } from "react";
+import { FaUpload, FaTrash, FaExclamationCircle } from "react-icons/fa";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const MerchantPhotos = () => {
+  const [uploadedImages, setUploadedImages] = useState<
+    Array<{
+      file: File;
+      preview: string;
+      error?: string;
+    }>
+  >([]);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Handle file validation
+  const validateFile = (file: File): { valid: boolean; error?: string } => {
+    // Check file type
+    const validTypes = ["image/jpeg", "image/png", "image/jpg"];
+    if (!validTypes.includes(file.type)) {
+      return {
+        valid: false,
+        error: "Invalid file type. Only JPG or PNG allowed.",
+      };
+    }
+
+    // Check file size (5MB max)
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    if (file.size > maxSize) {
+      return { valid: false, error: "File too large. Maximum size is 5MB." };
+    }
+
+    return { valid: true };
+  };
+
+  // Check image dimensions
+  const checkImageDimensions = (
+    file: File,
+    callback: (result: { valid: boolean; error?: string }) => void
+  ) => {
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(img.src);
+      if (img.width < 700 || img.height < 420) {
+        callback({
+          valid: false,
+          error: "Image too small. Minimum resolution is 700 x 420 px.",
+        });
+      } else if (img.width < img.height) {
+        callback({
+          valid: false,
+          error: "Image must be in landscape orientation.",
+        });
+      } else {
+        callback({ valid: true });
+      }
+    };
+    img.onerror = () => {
+      callback({
+        valid: false,
+        error: "Failed to load image. Please try again.",
+      });
+    };
+  };
+
+  // Handle file upload
+  const handleFileUpload = useCallback(
+    (files: FileList | null) => {
+      if (!files) return;
+
+      // Check if adding these files would exceed the 20 photo limit
+      if (uploadedImages.length + files.length > 20) {
+        toast.error("You can upload a maximum of 20 photos.");
+        return;
+      }
+
+      Array.from(files).forEach((file) => {
+        const validation = validateFile(file);
+
+        if (!validation.valid) {
+          toast.error(validation.error);
+          setUploadedImages((prev) => [
+            ...prev,
+            {
+              file,
+              preview: URL.createObjectURL(file),
+              error: validation.error,
+            },
+          ]);
+          return;
+        }
+
+        checkImageDimensions(file, (result) => {
+          if (!result.valid) {
+            toast.error(result.error);
+            setUploadedImages((prev) => [
+              ...prev,
+              { file, preview: URL.createObjectURL(file), error: result.error },
+            ]);
+          } else {
+            setUploadedImages((prev) => [
+              ...prev,
+              { file, preview: URL.createObjectURL(file) },
+            ]);
+          }
+        });
+      });
+    },
+    [uploadedImages.length]
+  );
+
+  // Handle drag events
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isDragging) setIsDragging(true);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    handleFileUpload(files);
+  };
+
+  // Handle browse files click
+  const handleBrowseClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  // Handle file input change
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleFileUpload(e.target.files);
+    // Reset the input value so the same file can be uploaded again if removed
+    e.target.value = "";
+  };
+
+  // Remove an image
+  const removeImage = (index: number) => {
+    setUploadedImages((prev) => {
+      const newImages = [...prev];
+      // Revoke the object URL to avoid memory leaks
+      URL.revokeObjectURL(newImages[index].preview);
+      newImages.splice(index, 1);
+      return newImages;
+    });
+  };
+
   return (
-    <>
+    <div className="max-w-3xl mx-auto p-4">
+      <ToastContainer position="top-right" autoClose={5000} />
+      <h2 className="text-xl font-semibold mb-4">Upload your photos</h2>
+
+      <div className="bg-gray-100 p-4 rounded-md text-sm text-gray-600 mb-5">
+        <strong>Recommendation:</strong> Using your own photos helps customers
+        imagine their experience and gives you a chance to show off your
+        business.
+      </div>
+
+      <hr className="my-5" />
+
       <div>
-        <h2 className="text-xl font-semibold mb-4">Which photos would you like to use?</h2>
-        <div className="flex items-center mb-4">
-          <input type="radio" id="my-photo" name="photo-option" className="form-radio text-green-600" />
-          <label htmlFor="my-photo" className="ml-2 text-gray-800">Use my own photo(s)</label>
+        <label className="block text-lg font-medium text-gray-800 mb-2">
+          Upload photos
+        </label>
+
+        <div
+          className={cn(
+            "flex flex-col items-center justify-center border-2 border-dashed rounded-lg px-8 py-14 bg-white transition-colors",
+            isDragging ? "border-green-500 bg-green-50" : "border-gray-300",
+            uploadedImages.length > 0 && "mb-6"
+          )}
+          onDragEnter={handleDragEnter}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          <FaUpload className="text-green-600 h-12 w-12 mb-4" />
+
+          <p className="text-sm text-gray-600">
+            <span className="font-medium text-green-600">Drag and Drop</span>
+            <span> or </span>
+            <button
+              onClick={handleBrowseClick}
+              className="text-blue-600 hover:underline"
+            >
+              browse files
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept=".jpg,.jpeg,.png"
+              className="hidden"
+              onChange={handleFileInputChange}
+            />
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
+            {uploadedImages.length}/20 photos uploaded
+          </p>
         </div>
-        <div className="flex items-center mb-4">
-          <input type="radio" id="stock-photo" name="photo-option" className="form-radio text-green-600" />
-          <label htmlFor="stock-photo" className="ml-2 text-gray-800">Choose a stock photo</label>
-        </div>
-        {/* More UI and logic can be added here */}
-        <div className="flex justify-between items-center mt-6">
-          <button className="flex items-center px-10 py-2 border border-gray-300 rounded-full text-gray-600 hover:bg-gray-100">Previous</button>
-          <button className="flex items-center px-10 py-2 bg-green-600 text-white rounded-full hover:bg-green-700">Next</button>
+
+        {uploadedImages.length > 0 && (
+          <div className="mb-6">
+            <h3 className="font-medium text-gray-800 mb-3">Uploaded Photos</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {uploadedImages.map((image, index) => (
+                <div key={index} className="relative group">
+                  <div className="relative aspect-video overflow-hidden rounded-md border border-gray-200">
+                    <Image
+                      src={image.preview || "/placeholder.svg"}
+                      alt={`Uploaded image ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                    {image.error && (
+                      <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center p-2">
+                        <div className="text-white text-xs text-center">
+                          <FaExclamationCircle className="mx-auto mb-1 text-red-500" />
+                          {image.error}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => removeImage(index)}
+                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    aria-label="Remove image"
+                  >
+                    <FaTrash className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="my-5">
+          <h3 className="font-medium text-gray-800 mb-2">Requirements</h3>
+          <ul className="list-disc list-inside text-gray-800 mb-4">
+            <li>Maximum 20 photos</li>
+            <li>All photos must be in landscape (horizontal) orientation.</li>
+            <li>Accepted file types: jpg or png</li>
+            <li>Maximum file size: 5 MB</li>
+            <li>Minimum resolution: 700 x 420 px</li>
+            <li>Only upload photos you own (no photos from Yelp or Google).</li>
+          </ul>
+          <p className="text-sm text-gray-600 mb-4">
+            Photos that don't meet Groupon's requirements may be replaced with a
+            photo from our stock library.
+          </p>
+          <div className="text-sm">
+            <a href="#" className="text-blue-600 hover:underline">
+              Get more help
+            </a>
+            <span className="mx-5 text-gray-400">|</span>
+            <a href="#" className="text-blue-600 hover:underline">
+              Preview this section
+            </a>
+          </div>
         </div>
       </div>
-    </>
+
+      <div className="flex justify-between items-center mt-6">
+        <button className="flex items-center px-10 py-2 border border-gray-300 rounded-full text-gray-600 hover:bg-gray-100">
+          Previous
+        </button>
+
+        <button className="flex items-center px-10 py-2 bg-green-600 text-white rounded-full hover:bg-green-700">
+          Next
+        </button>
+      </div>
+    </div>
   );
 };
 
 export default MerchantPhotos;
-
