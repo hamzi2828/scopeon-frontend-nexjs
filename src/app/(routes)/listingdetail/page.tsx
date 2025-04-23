@@ -17,8 +17,23 @@ import ListingDetailSlider from "../../components/website/listingdetail/ListingD
 import ListingAmenities from "../../components/website/listingdetail/ListingAmenities";
 import ListingReviews from "../../components/website/listingdetail/ListingReviews";
 import LeaveComment from "../../components/website/listingdetail/LeaveComment";
+import { Suspense } from "react";
 
-const spaOptions = [
+interface SpaOption {
+  id: string;
+  title: string;
+  originalPrice: string;
+  discountedPrice: string;
+  finalPrice: string;
+  discountPercentage: string;
+  extraOffer: string;
+  finalDiscountedPrice: string;
+  codeInfo: string;
+  purchaseInfo: string;
+  giftIcon: boolean;
+}
+
+const spaOptions: SpaOption[] = [
   {
     id: "option1",
     title: "Spa Admission",
@@ -47,7 +62,7 @@ const spaOptions = [
   },
 ];
 
-export default function ListingDetailPage() {
+const ListingDetailContent = () => {
   const searchParams = useSearchParams();
   const listingId = searchParams.get("id");
 
@@ -176,7 +191,7 @@ export default function ListingDetailPage() {
                 </div>
               </div>
               <div className="p-3 bg-gray-200 rounded-lg">
-                {spaOptions.map((option) => (
+                {spaOptions.map((option: SpaOption) => (
                   <label
                     key={option.id}
                     htmlFor={option.id}
@@ -239,5 +254,23 @@ export default function ListingDetailPage() {
       </div>
       <Footer />
     </main>
+  );
+};
+
+export default function ListingDetailPage() {
+  return (
+    <Suspense
+      fallback={
+        <main>
+          <NavBar />
+          <div className="max-w-screen-xl mx-auto py-20 text-center">
+            <h1 className="text-3xl font-semibold text-gray-800">Loading...</h1>
+          </div>
+          <Footer />
+        </main>
+      }
+    >
+      <ListingDetailContent />
+    </Suspense>
   );
 }
