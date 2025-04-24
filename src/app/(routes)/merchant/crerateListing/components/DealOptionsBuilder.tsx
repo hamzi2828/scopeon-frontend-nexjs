@@ -4,7 +4,6 @@ import React from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
 
 interface DealOption {
-  id: string;
   title: string;
   originalPrice: string;
   discountPercentage: string;
@@ -18,7 +17,6 @@ interface DealOption {
 }
 
 const emptyOption = (): DealOption => ({
-  id: Date.now().toString() + Math.random(),
   title: "",
   originalPrice: "",
   discountPercentage: "",
@@ -65,7 +63,7 @@ const DealOptionsBuilder: React.FC<DealOptionsBuilderProps> = ({ value = [], onC
     <div className="max-w-3xl mx-auto p-4">
       <h2 className="text-xl font-semibold mb-4">Create Deal Options</h2>
       {value.map((option, idx) => (
-        <div key={option.id} className="border p-4 rounded mb-4 bg-white shadow-sm relative">
+        <div key={idx} className="border p-4 rounded mb-4 bg-white shadow-sm relative">
           <button
             type="button"
             className="absolute top-2 right-2 text-red-500 hover:text-red-700"

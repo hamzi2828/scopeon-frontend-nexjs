@@ -8,7 +8,6 @@ import Highlights from "./components/Highlights";
 import DealOptionsBuilder from "./components/DealOptionsBuilder";
 
 const initialDealOption = {
-  id: Date.now().toString() + Math.random(),
   title: "",
   originalPrice: "",
   discountPercentage: "",
