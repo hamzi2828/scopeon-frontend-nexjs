@@ -38,24 +38,20 @@ const CreateListing = () => {
     setError("");
     setSuccess("");
 
-    const payload = {
-      title,
-      description,
-      highlights,
-      amenities,
-      dealOptions,
-      photos: photos.map(photo => photo.name), // Adjust for real uploads
-    };
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("highlights", highlights);
+    formData.append("amenities", JSON.stringify(amenities));
+    formData.append("dealOptions", JSON.stringify(dealOptions));
+    photos.forEach((photo) => {
+      formData.append("photos", photo);
+    });
 
-    console.log(payload);
-    return;
     try {
       const res = await fetch("http://localhost:3001/listings/create", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+        body: formData,
       });
 
       if (!res.ok) {

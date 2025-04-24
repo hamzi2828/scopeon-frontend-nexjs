@@ -202,6 +202,7 @@ const UploadPhotos = ({ value, onChange }: UploadPhotosProps) => {
             <span className="font-medium text-green-600">Drag and Drop</span>
             <span> or </span>
             <button
+              type="button"
               onClick={handleBrowseClick}
               className="text-blue-600 hover:underline"
             >
