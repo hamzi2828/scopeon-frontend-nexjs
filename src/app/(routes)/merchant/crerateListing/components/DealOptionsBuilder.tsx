@@ -34,17 +34,20 @@ interface DealOptionsBuilderProps {
   onChange: (options: DealOption[]) => void;
 }
 
-const DealOptionsBuilder: React.FC<DealOptionsBuilderProps> = ({ value = [], onChange }) => {
+const DealOptionsBuilder: React.FC<DealOptionsBuilderProps> = ({
+  value = [],
+  onChange,
+}) => {
   const handleChange = <K extends keyof DealOption>(
-  idx: number,
-  field: K,
-  val: DealOption[K]
-) => {
-  const updated = value.map((opt, i) =>
-    i === idx ? { ...opt, [field]: val } : opt
-  );
-  onChange(updated);
-};
+    idx: number,
+    field: K,
+    val: DealOption[K]
+  ) => {
+    const updated = value.map((opt, i) =>
+      i === idx ? { ...opt, [field]: val } : opt
+    );
+    onChange(updated);
+  };
 
   const handleAdd = () => {
     if (typeof onChange === "function") {
@@ -63,10 +66,13 @@ const DealOptionsBuilder: React.FC<DealOptionsBuilderProps> = ({ value = [], onC
     <div className="max-w-3xl mx-auto p-4">
       <h2 className="text-xl font-semibold mb-4">Create Deal Options</h2>
       {value.map((option, idx) => (
-        <div key={idx} className="border p-4 rounded mb-4 bg-white shadow-sm relative">
+        <div
+          key={idx}
+          className="border p-4 rounded mb-4 bg-white shadow-sm relative"
+        >
           <button
             type="button"
-            className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+            className="absolute bottom-6 right-2 text-red-500 hover:text-red-700"
             onClick={() => handleRemove(idx)}
             disabled={value.length === 1}
             title="Remove option"
@@ -78,7 +84,7 @@ const DealOptionsBuilder: React.FC<DealOptionsBuilderProps> = ({ value = [], onC
               className="border rounded px-3 py-2"
               placeholder="Title"
               value={option.title}
-              onChange={e => handleChange(idx, "title", e.target.value)}
+              onChange={(e) => handleChange(idx, "title", e.target.value)}
             />
             <input
               className="border rounded px-3 py-2"
@@ -86,7 +92,9 @@ const DealOptionsBuilder: React.FC<DealOptionsBuilderProps> = ({ value = [], onC
               min="0"
               placeholder="Original Price"
               value={option.originalPrice}
-              onChange={e => handleChange(idx, "originalPrice", e.target.value)}
+              onChange={(e) =>
+                handleChange(idx, "originalPrice", e.target.value)
+              }
             />
             <input
               className="border rounded px-3 py-2"
@@ -94,19 +102,20 @@ const DealOptionsBuilder: React.FC<DealOptionsBuilderProps> = ({ value = [], onC
               min="0"
               placeholder="Discount %"
               value={option.discountPercentage}
-              onChange={e => handleChange(idx, "discountPercentage", e.target.value)}
+              onChange={(e) =>
+                handleChange(idx, "discountPercentage", e.target.value)
+              }
             />
           </div>
           <div className="mt-2 text-green-700 font-semibold">
-            Total: {
-              (() => {
-                const price = parseFloat(option.originalPrice || "0");
-                const discount = parseFloat(option.discountPercentage || "0");
-                if (isNaN(price) || isNaN(discount)) return "$0.00";
-                const total = price - (price * discount / 100);
-                return `$${total.toFixed(2)}`;
-              })()
-            }
+            Total:{" "}
+            {(() => {
+              const price = parseFloat(option.originalPrice || "0");
+              const discount = parseFloat(option.discountPercentage || "0");
+              if (isNaN(price) || isNaN(discount)) return "$0.00";
+              const total = price - (price * discount) / 100;
+              return `$${total.toFixed(2)}`;
+            })()}
           </div>
         </div>
       ))}
