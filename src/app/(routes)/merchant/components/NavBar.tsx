@@ -1,19 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import { FaBars, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaBars } from "react-icons/fa";
 import { RxCross1 } from "react-icons/rx";
 import Link from "next/link";
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
   };
 
   return (
@@ -46,7 +41,7 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <Link href="/merchant/merchantphotos" className="block text-gray-600 hover:bg-gray-100 lg:px-3 px-1 py-2 rounded-md duration-300 cursor-pointer">
+              <Link href="/merchant/crerateListing" className="block text-gray-600 hover:bg-gray-100 lg:px-3 px-1 py-2 rounded-md duration-300 cursor-pointer">
                 Photos
               </Link>
             </li>

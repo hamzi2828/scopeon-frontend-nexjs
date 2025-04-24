@@ -18,45 +18,16 @@ const SideBar = () => {
     <div>
       <ul className="space-y-2 mt-2">
         <Link
-          href="/merchant/merchantoptions"
+          href="/merchant/crerateListing"
           className={`block text-gray-600 ${
-            isActive("/merchant/merchantoptions")
+            isActive("/merchant/crerateListing")
               ? "bg-gray-100"
               : "hover:bg-gray-100"
           } lg:px-3 px-1 py-2 rounded-md duration-300 cursor-pointer`}
         >
-          Options
+          Create Listing
         </Link>
-        <Link
-          href="/merchant/merchantphotos"
-          className={`block text-gray-600 ${
-            isActive("/merchant/merchantphotos")
-              ? "bg-gray-100"
-              : "hover:bg-gray-100"
-          } lg:px-3 px-1 py-2 rounded-md duration-300 cursor-pointer`}
-        >
-          Photos
-        </Link>
-        <Link
-          href="/merchant/merchanthighlights"
-          className={`block text-gray-600 ${
-            isActive("/merchant/merchanthighlights")
-              ? "bg-gray-100"
-              : "hover:bg-gray-100"
-          } lg:px-3 px-1 py-2 rounded-md duration-300 cursor-pointer`}
-        >
-          Highlights
-        </Link>
-        <Link
-          href="/merchant/merchantdescription"
-          className={`block text-gray-600 ${
-            isActive("/merchant/merchantdescription")
-              ? "bg-gray-100"
-              : "hover:bg-gray-100"
-          } lg:px-3 px-1 py-2 rounded-md duration-300 cursor-pointer`}
-        >
-          Description
-        </Link>
+      
         <Link
           href="/merchant/merchantvoucher"
           className={`block text-gray-600 ${

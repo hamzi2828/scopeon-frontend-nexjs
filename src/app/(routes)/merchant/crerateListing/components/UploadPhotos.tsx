@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const MerchantPhotos = () => {
+const UploadPhotos = () => {
   const [uploadedImages, setUploadedImages] = useState<
     Array<{
       file: File;
@@ -264,35 +264,11 @@ const MerchantPhotos = () => {
             <li>Accepted file types: jpg or png</li>
             <li>Maximum file size: 5 MB</li>
             <li>Minimum resolution: 700 x 420 px</li>
-            <li>Only upload photos you own (no photos from Yelp or Google).</li>
           </ul>
-          <p className="text-sm text-gray-600 mb-4">
-            Photos that don't meet Groupon's requirements may be replaced with a
-            photo from our stock library.
-          </p>
-          <div className="text-sm">
-            <a href="#" className="text-blue-600 hover:underline">
-              Get more help
-            </a>
-            <span className="mx-5 text-gray-400">|</span>
-            <a href="#" className="text-blue-600 hover:underline">
-              Preview this section
-            </a>
-          </div>
         </div>
-      </div>
-
-      <div className="flex justify-between items-center mt-6">
-        <button className="flex items-center px-10 py-2 border border-gray-300 rounded-full text-gray-600 hover:bg-gray-100">
-          Previous
-        </button>
-
-        <button className="flex items-center px-10 py-2 bg-green-600 text-white rounded-full hover:bg-green-700">
-          Next
-        </button>
       </div>
     </div>
   );
 };
 
-export default MerchantPhotos;
+export default UploadPhotos;
