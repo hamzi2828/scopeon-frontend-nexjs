@@ -2,3 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+.navbanner {
+    background-image: url(https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/travel-11.jpg);
+}
+.blog-banner-area {
+    position: relative;
+    background-image: url("https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/eventbanner-2.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+}  
