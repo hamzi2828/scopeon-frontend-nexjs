@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useMemo } from "react";
+import React, { useRef, useMemo } from "react";
 import dynamic from "next/dynamic";
 
 // Dynamically import JoditEditor with no SSR
@@ -8,9 +8,14 @@ const JoditEditor = dynamic(() => import("jodit-react"), {
   ssr: false,
 });
 
-const Description = ({ placeholder = "Enter a description..." }: { placeholder?: string }) => {
+type DescriptionProps = {
+  value: string;
+  onChange: (val: string) => void;
+  placeholder?: string;
+};
+
+const Description = ({ value, onChange, placeholder = "Enter a description..." }: DescriptionProps) => {
   const editor = useRef(null);
-  const [content, setContent] = useState("");
 
   const config = useMemo(
     () => ({
@@ -26,11 +31,11 @@ const Description = ({ placeholder = "Enter a description..." }: { placeholder?:
       <JoditEditor
         className="my-5"
         ref={editor}
-        value={content}
+        value={value}
         config={config}
         tabIndex={1}
-        onBlur={(newContent: string) => setContent(newContent)}
-        onChange={(newContent: string) => setContent(newContent)}
+        onBlur={onChange}
+        onChange={onChange}
       />
     </div>
   );

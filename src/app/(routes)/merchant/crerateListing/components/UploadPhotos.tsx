@@ -1,23 +1,32 @@
 "use client";
 
-import type React from "react";
-import { useState, useRef, useCallback } from "react";
-import { FaUpload, FaTrash, FaExclamationCircle } from "react-icons/fa";
+import React, { useState, useRef, useCallback } from "react";
+import { FaUpload, FaTrash } from "react-icons/fa";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const UploadPhotos = () => {
-  const [uploadedImages, setUploadedImages] = useState<
-    Array<{
-      file: File;
-      preview: string;
-      error?: string;
-    }>
-  >([]);
+type UploadPhotosProps = {
+  value: File[];
+  onChange: (val: File[]) => void;
+};
+
+const UploadPhotos = ({ value, onChange }: UploadPhotosProps) => {
+  // Generate previews for all files in value
+  const [previews, setPreviews] = useState<string[]>([]);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Update previews whenever value changes
+  React.useEffect(() => {
+    const urls = value.map(file => URL.createObjectURL(file));
+    setPreviews(urls);
+    return () => {
+      urls.forEach(url => URL.revokeObjectURL(url));
+    };
+  }, [value]);
+
 
   // Handle file validation
   const validateFile = (file: File): { valid: boolean; error?: string } => {
@@ -76,44 +85,39 @@ const UploadPhotos = () => {
       if (!files) return;
 
       // Check if adding these files would exceed the 20 photo limit
-      if (uploadedImages.length + files.length > 20) {
+      if (value.length + files.length > 20) {
         toast.error("You can upload a maximum of 20 photos.");
         return;
       }
 
-      Array.from(files).forEach((file) => {
-        const validation = validateFile(file);
+      const filesArr = Array.from(files);
+      const validFiles: File[] = [];
+      let pending = filesArr.length;
 
+      filesArr.forEach((file) => {
+        const validation = validateFile(file);
         if (!validation.valid) {
           toast.error(validation.error);
-          setUploadedImages((prev) => [
-            ...prev,
-            {
-              file,
-              preview: URL.createObjectURL(file),
-              error: validation.error,
-            },
-          ]);
+          pending--;
+          if (pending === 0 && validFiles.length > 0) {
+            onChange([...value, ...validFiles]);
+          }
           return;
         }
-
         checkImageDimensions(file, (result) => {
           if (!result.valid) {
             toast.error(result.error);
-            setUploadedImages((prev) => [
-              ...prev,
-              { file, preview: URL.createObjectURL(file), error: result.error },
-            ]);
           } else {
-            setUploadedImages((prev) => [
-              ...prev,
-              { file, preview: URL.createObjectURL(file) },
-            ]);
+            validFiles.push(file);
+          }
+          pending--;
+          if (pending === 0 && validFiles.length > 0) {
+            onChange([...value, ...validFiles]);
           }
         });
       });
     },
-    [uploadedImages.length]
+    [value, onChange]
   );
 
   // Handle drag events
@@ -158,14 +162,10 @@ const UploadPhotos = () => {
 
   // Remove an image
   const removeImage = (index: number) => {
-    setUploadedImages((prev) => {
-      const newImages = [...prev];
-      // Revoke the object URL to avoid memory leaks
-      URL.revokeObjectURL(newImages[index].preview);
-      newImages.splice(index, 1);
-      return newImages;
-    });
+    const updated = value.filter((_, i) => i !== index);
+    onChange(updated);
   };
+
 
   return (
     <div className="max-w-3xl mx-auto p-4">
@@ -189,7 +189,7 @@ const UploadPhotos = () => {
           className={cn(
             "flex flex-col items-center justify-center border-2 border-dashed rounded-lg px-8 py-14 bg-white transition-colors",
             isDragging ? "border-green-500 bg-green-50" : "border-gray-300",
-            uploadedImages.length > 0 && "mb-6"
+            value.length > 0 && "mb-6"
           )}
           onDragEnter={handleDragEnter}
           onDragOver={handleDragOver}
@@ -217,31 +217,23 @@ const UploadPhotos = () => {
             />
           </p>
           <p className="text-sm text-gray-500 mt-2">
-            {uploadedImages.length}/20 photos uploaded
+            {value.length}/20 photos uploaded
           </p>
         </div>
 
-        {uploadedImages.length > 0 && (
+        {value.length > 0 && (
           <div className="mb-6">
             <h3 className="font-medium text-gray-800 mb-3">Uploaded Photos</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {uploadedImages.map((image, index) => (
+              {value.map((file, index) => (
                 <div key={index} className="relative group">
                   <div className="relative aspect-video overflow-hidden rounded-md border border-gray-200">
                     <Image
-                      src={image.preview || "/placeholder.svg"}
+                      src={previews[index] || "/placeholder.svg"}
                       alt={`Uploaded image ${index + 1}`}
                       fill
                       className="object-cover"
                     />
-                    {image.error && (
-                      <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center p-2">
-                        <div className="text-white text-xs text-center">
-                          <FaExclamationCircle className="mx-auto mb-1 text-red-500" />
-                          {image.error}
-                        </div>
-                      </div>
-                    )}
                   </div>
                   <button
                     onClick={() => removeImage(index)}

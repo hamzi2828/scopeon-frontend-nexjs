@@ -1,35 +1,38 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { FaPlus, FaMinus } from "react-icons/fa";
 
-const Amenities = () => {
-  const [amenities, setAmenities] = useState<string[]>([""]);
+type AmenitiesProps = {
+  value: string[];
+  onChange: (val: string[]) => void;
+};
 
+const Amenities = ({ value, onChange }: AmenitiesProps) => {
   // Handle input change
-  const handleChange = (index: number, value: string) => {
-    const newAmenities = [...amenities];
-    newAmenities[index] = value;
-    setAmenities(newAmenities);
+  const handleChange = (index: number, newValue: string) => {
+    const updated = [...value];
+    updated[index] = newValue;
+    onChange(updated);
   };
 
   // Add a new amenity row
   const handleAdd = () => {
-    setAmenities([...amenities, ""]);
+    onChange([...value, ""]);
   };
 
   // Remove an amenity row
   const handleRemove = (index: number) => {
-    if (amenities.length === 1) return; // Prevent removing the last row
-    const newAmenities = amenities.filter((_, i) => i !== index);
-    setAmenities(newAmenities);
+    if (value.length === 1) return; // Prevent removing the last row
+    const updated = value.filter((_, i) => i !== index);
+    onChange(updated);
   };
 
   return (
     <div className="max-w-3xl mx-auto p-4">
       <h2 className="text-xl font-semibold mb-4">Amenities</h2>
       <div className="space-y-3">
-        {amenities.map((amenity, idx) => (
+        {value.map((amenity, idx) => (
           <div key={idx} className="flex items-center gap-2">
             <input
               type="text"
@@ -51,7 +54,7 @@ const Amenities = () => {
               onClick={() => handleRemove(idx)}
               className="bg-red-500 text-white p-2 rounded hover:bg-red-600 disabled:opacity-50"
               aria-label="Remove amenity"
-              disabled={amenities.length === 1}
+              disabled={value.length === 1}
             >
               <FaMinus />
             </button>
