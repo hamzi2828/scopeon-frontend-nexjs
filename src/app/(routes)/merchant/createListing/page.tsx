@@ -6,7 +6,7 @@ import Amenities from "./components/Amenities";
 import Description from "./components/Description";
 import Highlights from "./components/Highlights";
 import DealOptionsBuilder from "./components/DealOptionsBuilder";
-
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 const initialDealOption = {
   title: "",
   originalPrice: "",
@@ -48,7 +48,7 @@ const CreateListing = () => {
     });
 
     try {
-      const res = await fetch("http://localhost:3001/listings/create", {
+      const res = await fetch(`${API_BASE_URL}/listings/create`, {
         method: "POST",
         body: formData,
       });

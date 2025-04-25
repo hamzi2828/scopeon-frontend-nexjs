@@ -33,7 +33,7 @@ const SignInAsMerchant: React.FC = () => {
     if (auth.isAuthenticated && auth.user) {
       const userDetails = getUserDetailsFromToken();
       if (userDetails?.userType === "merchant") {
-        router.push("/merchant/dashboard");
+        router.push("/merchant");
       } else {
         router.push("/");
       }

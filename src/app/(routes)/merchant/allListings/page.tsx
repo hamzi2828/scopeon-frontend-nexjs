@@ -6,11 +6,12 @@ interface Listing {
   title: string;
   slug: string;
   description?: string;
-  highlights?: string;
+  highlights?: string;  
   amenities?: string[];
   photos?: string[];
   // Add other fields as needed
 }
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;  // Replace with your API base URL
 
 const AllListingsPage = () => {
   const [listings, setListings] = useState<Listing[]>([]);
@@ -20,7 +21,7 @@ const AllListingsPage = () => {
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const res = await fetch("http://localhost:3001/listings/getAll/listings", {
+        const res = await fetch(`${API_BASE_URL}/listings/getAll/listings`, {
             method: "GET",
           });
         if (!res.ok) throw new Error('Failed to fetch listings');
