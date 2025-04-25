@@ -10,5 +10,4 @@ export type UserRole = {
     _id: string;
     fullname: string;
     email: string;
-    role: UserRole; // Nested role object
   };

@@ -20,7 +20,6 @@ const AllListingsPage = () => {
   useEffect(() => {
     const fetchListings = async () => {
       try {
-
         const res = await fetch("http://localhost:3001/listings/getAll/listings", {
             method: "GET",
           });
