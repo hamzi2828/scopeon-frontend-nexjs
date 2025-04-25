@@ -5,7 +5,7 @@
 import Cookies from 'js-cookie';
 import {jwtDecode} from 'jwt-decode';
 
-type UserDetails = {
+export type UserDetails = {
   _id: string;
   fullname: string;
   email: string;

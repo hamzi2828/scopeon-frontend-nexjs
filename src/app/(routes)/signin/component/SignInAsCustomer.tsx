@@ -1,54 +1,51 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { loginUser } from "../service/signinService";
-import { LoginResponseType } from "../types/types";
-import Cookies from "js-cookie";
-import { getUserDetailsFromToken } from "../../../../helper/helper";
+import { useDispatch, useSelector } from "react-redux";
+import { customerLogin } from '@/redux/authSlice';
+import { RootState, AppDispatch } from '@/redux/store';
+import { getUserDetailsFromToken } from "@/helper/helper";
 import { showToast } from "@/helper/toast";
 
 const SignInAsCustomer: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const auth = useSelector((state: RootState) => state.auth);
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const clearEmail = () => setEmail("");
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     const errors: { [key: string]: string } = {};
     if (!email) errors.email = "Email is required";
     if (!password) errors.password = "Password is required";
     if (Object.keys(errors).length > 0) return;
-    setLoading(true);
-    try {
-      const response: LoginResponseType = await loginUser({ email, password });
-      showToast(response.message, "success");
-      Cookies.set("token", response.token, { expires: 7, path: "/" });
+    dispatch(customerLogin({ email, password }));
+  };
+
+  useEffect(() => {
+    if (auth.isAuthenticated && auth.user) {
       const userDetails = getUserDetailsFromToken();
       if (userDetails?.userType === "customer") {
         router.push("/customer/dashboard");
       } else {
         router.push("/");
       }
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "An error occurred during login";
-      showToast(message, "error");
-      setError(message);
-    } finally {
-      setLoading(false);
     }
-  };
+    if (auth.error) {
+      showToast(auth.error, "error");
+    }
+  }, [auth.isAuthenticated, auth.user, auth.error, router]);
 
   return (
     <div className="w-full max-w-screen-sm mx-auto text-center">
       <h1 className="text-3xl font-bold my-10">Sign in to score great deals!</h1>
-      {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
-      {loading && <div className="text-gray-500 mb-2">Signing you in...</div>}
+      {auth.error && <div className="text-red-500 text-sm mb-4">{auth.error}</div>}
+      {auth.loading && <div className="text-gray-500 mb-2">Signing you in...</div>}
       <div className="mt-4 mx-5">
         {/* Customer Email */}
         <div className="mb-6">
@@ -94,9 +91,9 @@ const SignInAsCustomer: React.FC = () => {
         <button
           className="w-full bg-orange-600 text-white text-lg font-semibold py-2 rounded-lg hover:bg-orange-700 mb-5 text-center block"
           onClick={handleLogin}
-          disabled={loading}
+          disabled={auth.loading}
         >
-          {loading ? "Signing In..." : "Login Dashboard"}
+          {auth.loading ? "Signing In..." : "Login Dashboard"}
         </button>
       </div>
     </div>

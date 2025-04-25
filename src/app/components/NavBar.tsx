@@ -1,7 +1,6 @@
 // src/components/NavBar.tsx
 "use client";
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { GrCart } from "react-icons/gr";
@@ -35,9 +34,26 @@ const NavLink: React.FC<NavLinkProps> = ({ href, children, className }) => {
   );
 };
 
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
+// ...other imports
+
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    setIsLoggedIn(!!Cookies.get('token'));
+  }, []);
+
+  const handleSignOut = () => {
+    Cookies.remove('token');
+    setIsLoggedIn(false);
+    router.push('/signin');
+  };
 
   const toggleDrawer = () => setIsOpen(!isOpen);
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
@@ -96,11 +112,22 @@ const NavBar = () => {
               <LiaBlogSolid className="text-2xl" />
             </NavLink>
           </li>
-          <li className="text-xl block py-2 border-b-2 border-transparent hover:text-orange-500 hover:after:bg-orange-500 hover:after:w-full">
-            <NavLink href="/signin">
-              Sign In
-            </NavLink>
-          </li>
+          {isLoggedIn ? (
+            <li className="text-xl block py-2 border-b-2 border-transparent hover:text-orange-500 hover:after:bg-orange-500 hover:after:w-full">
+              <button
+                onClick={handleSignOut}
+                className="text-white hover:text-orange-500 focus:outline-none"
+              >
+                Sign Out
+              </button>
+            </li>
+          ) : (
+            <li className="text-xl block py-2 border-b-2 border-transparent hover:text-orange-500 hover:after:bg-orange-500 hover:after:w-full">
+              <NavLink href="/signin">
+                Sign In
+              </NavLink>
+            </li>
+          )}
         </ul>
       </div>
 
