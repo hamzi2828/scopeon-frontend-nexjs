@@ -83,10 +83,10 @@ const CreateListing = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 bg-white">
         <div className="lg:grid lg:grid-cols-12 lg:gap-6">
           {/* Main Content */}
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-12">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Title Section */}
               <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
@@ -148,75 +148,6 @@ const CreateListing = () => {
           </div>
 
           {/* Sidebar - Converts to bottom section on mobile */}
-          <div className="lg:col-span-4 mt-6 lg:mt-0">
-            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 lg:sticky lg:top-6">
-              <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-4">
-                Listing Summary
-              </h3>
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 gap-4">
-                  <div>
-                    <p className="text-xs sm:text-sm text-gray-600">Title</p>
-                    <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">
-                      {title || "Not set"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs sm:text-sm text-gray-600">Photos</p>
-                    <p className="text-xs sm:text-sm font-medium text-gray-900">
-                      {photos.length} uploaded
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs sm:text-sm text-gray-600">
-                      Deal Options
-                    </p>
-                    <p className="text-xs sm:text-sm font-medium text-gray-900">
-                      {dealOptions.length} options
-                    </p>
-                  </div>
-                </div>
-
-                {/* Mobile Submit Button - Fixed to bottom */}
-                <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t lg:hidden z-10">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    onClick={handleSubmit}
-                    className="w-full bg-blue-600 text-white px-4 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                  >
-                    {loading ? (
-                      <>
-                        <FaSpinner className="animate-spin mr-2" />
-                        Creating...
-                      </>
-                    ) : (
-                      "Create Listing"
-                    )}
-                  </button>
-                </div>
-
-                {/* Desktop Submit Button */}
-                <div className="hidden lg:block">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    onClick={handleSubmit}
-                    className="w-full bg-blue-600 text-white px-4 py-2.5 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                  >
-                    {loading ? (
-                      <>
-                        <FaSpinner className="animate-spin mr-2" />
-                        Creating...
-                      </>
-                    ) : (
-                      "Create Listing"
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
