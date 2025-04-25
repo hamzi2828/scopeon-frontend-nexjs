@@ -17,6 +17,19 @@ const SideBar = () => {
   return (
     <div>
       <ul className="space-y-2 mt-2">
+
+      <Link
+          href="/merchant/allListing"
+          className={`block text-gray-600 ${
+            isActive("/merchant/allListings")
+              ? "bg-gray-100"
+              : "hover:bg-gray-100"
+          } lg:px-3 px-1 py-2 rounded-md duration-300 cursor-pointer`}
+        >
+          All Listings
+        </Link>
+
+
         <Link
           href="/merchant/crerateListing"
           className={`block text-gray-600 ${
