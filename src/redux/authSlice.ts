@@ -51,7 +51,7 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(merchantLogin.fulfilled, (state, action: PayloadAction<any>) => {
+      .addCase(merchantLogin.fulfilled, (state, action: PayloadAction<UserDetails>) => {
         state.loading = false;
         state.isAuthenticated = true;
         state.user = action.payload;
@@ -64,7 +64,7 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(customerLogin.fulfilled, (state, action: PayloadAction<any>) => {
+      .addCase(customerLogin.fulfilled, (state, action: PayloadAction<UserDetails>) => {
         state.loading = false;
         state.isAuthenticated = true;
         state.user = action.payload;
