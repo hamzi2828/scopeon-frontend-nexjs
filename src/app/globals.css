@@ -11,3 +11,43 @@
     background-size: cover;
     background-attachment: fixed;
 }  
+.custom-btn {
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    text-transform: uppercase;
+    outline: none;
+    overflow: hidden;
+    position: relative;
+    color: #ffffff;
+    border: 0.5px solid #ff5e00;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 0 30px;
+    width: auto;
+    /* height: 45px; */
+    line-height: 36px;
+    margin: 0 auto;
+  }
+  .custom-btn span {
+    position: relative;
+    z-index: 1;
+  }
+  .custom-btn.view-all-btn:after {
+    -webkit-transform: translateX(3%) translateY(-15%) rotate(43deg);
+    transform: translateX(3%) translateY(-15%) rotate(43deg);
+  }
+  .custom-btn:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 490%;
+    width: 140%;
+    background: #ff5e00;
+    color: #ffffff;
+    -webkit-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+    -webkit-transform: translateX(-98%) translateY(-17%) rotate(45deg);
+    transform: translateX(-98%) translateY(-17%) rotate(45deg);
+  }

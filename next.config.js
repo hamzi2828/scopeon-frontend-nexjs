@@ -17,14 +17,11 @@ const nextConfig = {
     // This disables the warning about using <img> instead of next/image
     // You should eventually migrate to next/image for better performance
     unoptimized: true,
+    domains: ['localhost'],
   },
   // Increase build timeout if needed
   experimental: {
-    // This increases the timeout for the build process
-    // Useful for larger projects that might time out during build
-    turbotrace: {
-      logLevel: 'error',
-    },
+    // Remove turbotrace as it's not a valid option
   },
 };
 

@@ -142,7 +142,7 @@ const BannerSection: React.FC = () => {
       <div className="md:flex hidden gap-6 mt-8 justify-center">
         {categories.map((category: Category, index: number) => (
           <div key={index} className="flex flex-col items-center group mt-2">
-            <div className="flex items-center justify-center w-20 h-20 border hover:border-0 border-white rounded-lg cursor-pointer bg-[#00000033] group-hover:bg-orange-600">
+            <div className="flex items-center justify-center w-20 h-20 border hover:border-0 border-white rounded-lg cursor-pointer bg-[#00000033] group-hover:bg-orange-600 group-hover:text-white">
               {category.svg}
             </div>
             <p className="text-white mt-2">{category.name}</p>
