@@ -1,19 +1,28 @@
 "use client";
 
-import { useState } from "react";
-import { listings } from "../../../data/Data";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { getFeaturedListings } from "../service/homeService";
 
 interface Listing {
-  id: number;
-  imageUrl: string;
-  openStatus: string;
-  closeStatus: string;
+  _id: string;
   title: string;
-  address: string;
-  website: string;
-  phone: string;
-  rating: number;
+  slug: string;
+  description?: string;
+  highlights?: string;
+  amenities?: string[];
+  photos?: string[];
+  isFeature?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  // For display purposes
+  openStatus?: string;
+  closeStatus?: string;
+  address?: string;
+  website?: string;
+  phone?: string;
+  rating?: number;
+  imageUrl?: string;
 }
 
 // Rest of your component code remains the same
@@ -72,7 +81,48 @@ const RatingStars = ({
 );
 
 const FeaturedListing = () => {
-  const [ratings, setRatings] = useState<number[]>(listings.map(() => 0));
+  const [featuredListings, setFeaturedListings] = useState<Listing[]>([]);
+  const [ratings, setRatings] = useState<number[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  useEffect(() => {
+    const fetchFeaturedListings = async () => {
+      try {
+        setLoading(true);
+        const data = await getFeaturedListings();
+        
+        // Transform data if needed to match the UI requirements
+        const transformedData = data.map((listing: Listing) => ({
+          ...listing,
+          // Default values for display if not provided by API
+          openStatus: "Open Now",
+          closeStatus: "Closes 10PM",
+          address: listing.highlights || "No address provided",
+          // Use actual website from API or fallback
+          website: listing.website || "www.example.com",
+          // Use actual phone from API or fallback
+          phone: listing.phone || "+1 234 567 890",
+          rating: 4.5,
+          imageUrl: listing.photos && listing.photos.length > 0
+            ? (listing.photos[0].startsWith('http')
+                ? listing.photos[0]
+                : `${process.env.NEXT_PUBLIC_API_BASE_URL}${listing.photos[0]}`)
+            : "https://via.placeholder.com/300x200"
+        }));
+        
+        setFeaturedListings(transformedData);
+        setRatings(new Array(transformedData.length).fill(0));
+      } catch (err) {
+        console.error("Error fetching featured listings:", err);
+        setError(err instanceof Error ? err.message : "Failed to load featured listings");
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchFeaturedListings();
+  }, []);
 
   const handleRatingChange = (index: number, newRating: number) => {
     const newRatings = [...ratings];
@@ -92,10 +142,19 @@ const FeaturedListing = () => {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 mx-5">
-        {listings.map((listing: Listing, index: number) => (
+      {loading ? (
+        <div className="flex justify-center items-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+        </div>
+      ) : error ? (
+        <div className="text-center py-10 text-red-500">{error}</div>
+      ) : featuredListings.length === 0 ? (
+        <div className="text-center py-10">No featured listings available at the moment.</div>
+      ) : (
+        <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 mx-5">
+          {featuredListings.map((listing: Listing, index: number) => (
           <div
-            key={listing.id}
+            key={listing._id}
             className="bg-white rounded-lg shadow hover:shadow-2xl duration-300 overflow-hidden"
           >
             <div className="relative">
@@ -186,7 +245,7 @@ const FeaturedListing = () => {
               </div>
               <div className="mt-4 flex items-center justify-between">
                 <Link
-                  href={`/listingdetail?id=${listing.id}`}
+                  href={`/listingdetail?id=${listing._id}`}
                   className="flex items-center text-orange-500 font-semibold text-sm hover:tracking-widest duration-300"
                 >
                   View Details
@@ -223,8 +282,9 @@ const FeaturedListing = () => {
               </div>
             </div>
           </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
       <div className="flex justify-center mt-10">
         <button className="custom-btn view-all-btn">
           <span>See All</span>

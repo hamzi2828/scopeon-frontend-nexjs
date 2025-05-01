@@ -1,23 +1,16 @@
-// /src/app/(routes)/signin/service/signinService.tsx
 
 import axios from 'axios';
-import { LoginErrorType, LoginRequestType } from '../types/types';  // Import the LoginErrorType
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:6000"; // Use env variable, fallback to localhost
 
-export const loginUser = async ({ email, password }: LoginRequestType) => {
+export const getFeaturedListings = async () => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/users/login`, {
-        email,
-        password,
-      });
-  
-      // Assuming the response returns { message, token }
-      return response.data; // { message, token }
+      const response = await axios.get(`${API_BASE_URL}/listings/getFeaturedListings`);
+      return response.data; 
     } catch (err) {
       // Custom error handling
       if (axios.isAxiosError(err)) {
-        const errorData = err.response?.data as LoginErrorType;
+        const errorData = err.response?.data;
   
         // Handle custom error format
         if (errorData) {
@@ -31,4 +24,4 @@ export const loginUser = async ({ email, password }: LoginRequestType) => {
         throw new Error('An unexpected error occurred');
       }
     }
-  };
+};

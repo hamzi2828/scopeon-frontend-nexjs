@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { listings } from "../../data/Data";
+import { getListingById } from "./service/listingDetailService";
 import NavBar from "../../components/NavBar";
 import Footer from "../../components/Footer";
 import {
@@ -62,19 +62,83 @@ const spaOptions: SpaOption[] = [
   },
 ];
 
+import { useEffect, useState } from "react";
+interface DealOption {
+  _id?: string;
+  id?: string;
+  title: string;
+  originalPrice: string;
+  discountedPrice?: string;
+  finalPrice?: string;
+  discountPercentage?: string;
+  extraOffer?: string;
+  finalDiscountedPrice?: string;
+  codeInfo?: string;
+  purchaseInfo?: string;
+  giftIcon?: boolean;
+}
+
+interface Listing {
+  _id: string;
+  title: string;
+  slug: string;
+  description?: string;
+  highlights?: string;
+  amenities?: string[];
+  photos?: string[];
+  isFeature?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  openStatus?: string;
+  closeStatus?: string;
+  address?: string;
+  website?: string;
+  phone?: string;
+  rating?: number;
+  imageUrl?: string;
+  dealOptions?: DealOption[];
+}
+
 const ListingDetailContent = () => {
   const searchParams = useSearchParams();
   const listingId = searchParams.get("id");
+  const [listing, setListing] = useState<Listing | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const listing = listings.find((l) => l.id === Number(listingId));
+  useEffect(() => {
+    if (!listingId) return;
+    setLoading(true);
+    getListingById(listingId)
+      .then((data) => {
+        setListing(data);
+        setError(null);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setListing(null);
+      })
+      .finally(() => setLoading(false));
+  }, [listingId]);
 
-  if (!listing) {
+  if (loading) {
+    return (
+      <main>
+        <NavBar />
+        <div className="max-w-screen-xl mx-auto py-20 text-center">
+          <h1 className="text-3xl font-semibold text-gray-800">Loading...</h1>
+        </div>
+        <Footer />
+      </main>
+    );
+  }
+  if (error || !listing) {
     return (
       <main>
         <NavBar />
         <div className="max-w-screen-xl mx-auto py-20 text-center">
           <h1 className="text-3xl font-semibold text-gray-800">
-            Listing not found
+            {error || "Listing not found"}
           </h1>
         </div>
         <Footer />
@@ -82,12 +146,13 @@ const ListingDetailContent = () => {
     );
   }
 
-  const listingImages = [
-    listing.imageUrl,
-    "https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/food-1.jpg",
-    "https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/food-2.jpg",
-    "https://theme.bitspecksolutions.com/html-template/listright/demo/assets/images/food-3.jpg",
-  ];
+  // Build image URLs from photos array
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:6000";
+  const listingImages = (listing.photos && listing.photos.length > 0)
+    ? listing.photos.map((photo: string) =>
+        photo.startsWith("http") ? photo : `${API_BASE_URL}${photo}`
+      )
+    : ["https://via.placeholder.com/300x200"];
 
   return (
     <main>
@@ -191,60 +256,64 @@ const ListingDetailContent = () => {
                 </div>
               </div>
               <div className="p-3 bg-gray-200 rounded-lg">
-                {spaOptions.map((option: SpaOption) => (
-                  <label
-                    key={option.id}
-                    htmlFor={option.id}
-                    className="border border-blue-300 rounded-lg py-2 px-4 bg-white shadow-sm block cursor-pointer my-1"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <input
-                          type="radio"
-                          name="option"
-                          id={option.id}
-                          className="mr-2"
-                        />
-                        <span className="font-semibold text-gray-800">
-                          {option.title}
-                        </span>
-                      </div>
-                      {option.giftIcon && <FaGift className="text-gray-400" />}
-                    </div>
+  {(listing.dealOptions && listing.dealOptions.length > 0 ? listing.dealOptions : spaOptions).map((option: DealOption, idx: number) => {
+    // Fallbacks for missing fields
+    const dummy = spaOptions[idx % spaOptions.length];
+    return (
+      <label
+        key={option._id || option.id || idx}
+        htmlFor={option._id || option.id || `option-${idx}`}
+        className="border border-blue-300 rounded-lg py-2 px-4 bg-white shadow-sm block cursor-pointer my-1"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <input
+              type="radio"
+              name="option"
+              id={option._id || option.id || `option-${idx}`}
+              className="mr-2"
+            />
+            <span className="font-semibold text-gray-800">
+              {option.title || dummy.title}
+            </span>
+          </div>
+          {(option.giftIcon ?? dummy.giftIcon) && <FaGift className="text-gray-400" />}
+        </div>
 
-                    <div>
-                      <div className="flex items-center">
-                        <span className="text-sm line-through text-gray-500 mr-2">
-                          {option.originalPrice}
-                        </span>
-                        <span className="text-sm text-green-600 font-semibold">
-                          {option.discountedPrice}
-                        </span>
-                      </div>
-                    </div>
+        <div>
+          <div className="flex items-center">
+            <span className="text-sm line-through text-gray-500 mr-2">
+              {option.originalPrice || dummy.originalPrice}
+            </span>
+            <span className="text-sm text-green-600 font-semibold">
+              {option.discountedPrice || dummy.discountedPrice}
+            </span>
+          </div>
+        </div>
 
-                    <div className="text-lg font-bold text-red-600">
-                      {option.finalPrice}{" "}
-                      <span className="text-sm text-gray-600">
-                        {option.discountPercentage}
-                      </span>
-                    </div>
+        <div className="text-lg font-bold text-red-600">
+          {option.finalPrice || dummy.finalPrice}{" "}
+          <span className="text-sm text-gray-600">
+            {option.discountPercentage || dummy.discountPercentage}
+          </span>
+        </div>
 
-                    <div className="text-sm text-red-600">
-                      {option.extraOffer}
-                    </div>
+        <div className="text-sm text-red-600">
+          {option.extraOffer || dummy.extraOffer}
+        </div>
 
-                    <div className="text-sm text-purple-600">
-                      {option.finalDiscountedPrice}{" "}
-                      <span className="text-gray-600">{option.codeInfo}</span>
-                    </div>
+        <div className="text-sm text-purple-600">
+          {option.finalDiscountedPrice || dummy.finalDiscountedPrice}{" "}
+          <span className="text-gray-600">{option.codeInfo || dummy.codeInfo}</span>
+        </div>
 
-                    <div className="text-sm text-gray-500">
-                      {option.purchaseInfo}
-                    </div>
-                  </label>
-                ))}
-              </div>
+        <div className="text-sm text-gray-500">
+          {option.purchaseInfo || dummy.purchaseInfo}
+        </div>
+      </label>
+    );
+  })}
+</div>
               <button className="w-full bg-green-600 text-white font-semibold py-2 rounded-lg hover:bg-green-700 transition duration-300 mt-2">
                 Buy now
               </button>

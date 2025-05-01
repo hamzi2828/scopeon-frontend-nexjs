@@ -30,6 +30,8 @@ const CreateListing = () => {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const [title, setTitle] = useState("");
+  const [phone, setPhone] = useState("");
+  const [website, setWebsite] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +43,8 @@ const CreateListing = () => {
     formData.append("title", title);
     formData.append("description", description);
     formData.append("highlights", highlights);
+    formData.append("phone", phone);
+    formData.append("website", website);
     formData.append("amenities", JSON.stringify(amenities));
     formData.append("dealOptions", JSON.stringify(dealOptions));
     photos.forEach((photo) => {
@@ -76,7 +80,36 @@ const CreateListing = () => {
         onChange={e => setTitle(e.target.value)}
         placeholder="Enter listing title"
         className="w-full border border-gray-300 rounded-md p-2 mb-4 text-gray-900 text-lg"
+        required
       />
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label htmlFor="phone" className="block text-gray-700 mb-1">Phone Number</label>
+          <input
+            id="phone"
+            type="tel"
+            value={phone}
+            onChange={e => setPhone(e.target.value)}
+            placeholder="Enter phone number"
+            className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
+            required
+          />
+        </div>
+        
+        <div>
+          <label htmlFor="website" className="block text-gray-700 mb-1">Website</label>
+          <input
+            id="website"
+            type="url"
+            value={website}
+            onChange={e => setWebsite(e.target.value)}
+            placeholder="Enter website URL (e.g., https://example.com)"
+            className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
+            required
+          />
+        </div>
+      </div>
     </div>
       <Description value={description} onChange={setDescription} />
       <Highlights value={highlights} onChange={setHighlights} />
