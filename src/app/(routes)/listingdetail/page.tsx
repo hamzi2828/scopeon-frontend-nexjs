@@ -147,7 +147,7 @@ const ListingDetailContent = () => {
   }
 
   // Build image URLs from photos array
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:6000";
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
   const listingImages = (listing.photos && listing.photos.length > 0)
     ? listing.photos.map((photo: string) =>
         photo.startsWith("http") ? photo : `${API_BASE_URL}${photo}`

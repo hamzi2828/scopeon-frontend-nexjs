@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:6000"; // Use env variable, fallback to localhost
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001"; // Use env variable, fallback to localhost
 
 export const getFeaturedListings = async () => {
     try {
