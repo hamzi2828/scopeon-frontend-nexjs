@@ -22,6 +22,20 @@ const AllListingsPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [toggleLoading, setToggleLoading] = useState<string | null>(null);
 
+  // Delete listing function
+  const deleteListing = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this listing?')) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/listings/${id}`, {
+        method: 'DELETE',
+      });
+      if (!res.ok) throw new Error('Failed to delete listing');
+      setListings(prev => prev.filter(listing => listing._id !== id));
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Error deleting listing');
+    }
+  };
+
   useEffect(() => {
     const fetchListings = async () => {
       try {
@@ -138,7 +152,7 @@ const AllListingsPage = () => {
                   Edit
                 </button>
                 <button 
-                  onClick={() => window.confirm(`Are you sure you want to delete ${listing.title}?`)} 
+                  onClick={() => deleteListing(listing._id)}
                   style={{
                     padding: '6px 12px',
                     backgroundColor: '#DC3545',
