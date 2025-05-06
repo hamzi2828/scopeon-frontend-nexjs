@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface Listing {
   _id: string;
@@ -15,6 +16,7 @@ interface Listing {
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;  // Replace with your API base URL
 
 const AllListingsPage = () => {
+  const router = useRouter();
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -121,8 +123,33 @@ const AllListingsPage = () => {
                 </div>
               </td>
               <td style={{ border: '1px solid #ccc', padding: 8 }}>
-                <button onClick={() => alert(`Viewing ${listing.title}`)} style={{marginRight:8}}>View</button>
-                {/* Add more actions like Edit/Delete as needed */}
+                <button 
+                  onClick={() => router.push(`/merchant/editListing/${listing._id}`)} 
+                  style={{
+                    marginRight: 8,
+                    padding: '6px 12px',
+                    backgroundColor: '#4285F4',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Edit
+                </button>
+                <button 
+                  onClick={() => window.confirm(`Are you sure you want to delete ${listing.title}?`)} 
+                  style={{
+                    padding: '6px 12px',
+                    backgroundColor: '#DC3545',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           ))}
