@@ -1,22 +1,12 @@
 import React from "react";
 import { TiTickOutline } from "react-icons/ti";
 
-const amenities = [
-  "Free WiFi",
-  "Parking",
-  "Outdoor Seating",
-  "Takeout",
-  "Delivery",
-  "Reservations",
-  "Wheelchair Accessible",
-  "Full Bar",
-  "Live Music",
-  "Private Dining",
-  "Catering",
-  "Gift Cards",
-];
+interface ListingAmenitiesProps {
+  amenities?: string[];
+}
 
-const ListingAmenities = () => {
+const ListingAmenities: React.FC<ListingAmenitiesProps> = ({ amenities }) => {
+  if (!amenities || amenities.length === 0) return null;
   return (
     <div className="m-4">
       <div className="bg-white p-6 rounded-lg border w-full">

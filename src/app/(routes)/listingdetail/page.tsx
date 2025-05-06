@@ -4,15 +4,15 @@ import { useSearchParams } from "next/navigation";
 import { getListingById } from "./service/listingDetailService";
 import NavBar from "../../components/NavBar";
 import Footer from "../../components/Footer";
-import {
+import { 
   FaClock,
   FaInfoCircle,
   FaTag,
 } from "react-icons/fa";
 import ListingDetailSlider from "../../components/website/listingdetail/ListingDetailSlider";
-import ListingAmenities from "../../components/website/listingdetail/ListingAmenities";
-import ListingReviews from "../../components/website/listingdetail/ListingReviews";
-import LeaveComment from "../../components/website/listingdetail/LeaveComment";
+import ListingAmenities from "./components/ListingAmenities";
+import ListingReviews from "./components/ListingReviews";
+import LeaveComment from "./components/LeaveComment";
 import ListingHighlights from "./components/ListingHighlights";
 import ListingDescription from "./components/ListingDescription";
 import ListingHeader from "./components/ListingHeader";
@@ -97,6 +97,18 @@ interface Listing {
   rating?: number;
   imageUrl?: string;
   dealOptions?: DealOption[];
+  reviews?: {
+    _id?: string;
+    name: string;
+    email?: string;
+    flexibility?: number;
+    qualityService?: number;
+    valueOfMoney?: number;
+    cleanliness?: number;
+    reviewText?: string;
+    photoUrl?: string;
+    createdAt?: string;
+  }[];
 }
 
 const ListingDetailContent = () => {
@@ -162,11 +174,11 @@ const ListingDetailContent = () => {
           <div className="md:col-span-2 col-span-3">
             <ListingHeader title={listing.title} address={listing.address} rating={listing.rating} />
             <ListingDetailSlider images={listingImages} />
-            <ListingAmenities />
+            <ListingAmenities amenities={listing.amenities} />
             <ListingHighlights highlights={listing.highlights} />
             <ListingDescription description={listing.description} />
-            <ListingReviews />
-            <LeaveComment />
+            <ListingReviews reviews={listing?.reviews} />
+            <LeaveComment listingId={listing._id} />
           </div>
           <div className="md:col-span-1 col-span-3">
             <div className="p-6">
