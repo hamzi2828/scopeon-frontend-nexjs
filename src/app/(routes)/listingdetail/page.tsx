@@ -109,6 +109,9 @@ interface Listing {
     photoUrl?: string;
     createdAt?: string;
   }[];
+  showBestRated?: boolean;
+  showBought?: boolean;
+  showSellingFast?: boolean;
 }
 
 const ListingDetailContent = () => {
@@ -172,7 +175,14 @@ const ListingDetailContent = () => {
       <div className="max-w-screen-xl mx-auto">
         <div className="grid grid-cols-3 gap-4">
           <div className="md:col-span-2 col-span-3">
-            <ListingHeader title={listing.title} address={listing.address} rating={listing.rating} />
+            <ListingHeader 
+              title={listing.title} 
+              address={listing.address} 
+              rating={listing.rating}
+              showBestRated={listing.showBestRated}
+              showBought={listing.showBought}
+              showSellingFast={listing.showSellingFast}
+            />
             <ListingDetailSlider images={listingImages} />
             <ListingAmenities amenities={listing.amenities} />
             <ListingHighlights highlights={listing.highlights} />

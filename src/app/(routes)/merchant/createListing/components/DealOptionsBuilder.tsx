@@ -73,41 +73,49 @@ const DealOptionsBuilder: React.FC<DealOptionsBuilderProps> = ({ value = [], onC
           >
             <FaTrash />
           </button>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
-            <input
-              className="border rounded px-3 py-2"
-              placeholder="Title"
-              value={option.title}
-              onChange={e => handleChange(idx, "title", e.target.value)}
-            />
-            <input
-              className="border rounded px-3 py-2"
-              type="number"
-              min="0"
-              placeholder="Original Price"
-              value={option.originalPrice}
-              onChange={e => handleChange(idx, "originalPrice", e.target.value)}
-            />
-            <input
-              className="border rounded px-3 py-2"
-              type="number"
-              min="0"
-              placeholder="Discount %"
-              value={option.discountPercentage}
-              onChange={e => handleChange(idx, "discountPercentage", e.target.value)}
-            />
+          <div className="flex flex-col md:flex-row md:space-x-4">
+            <div className="flex-1 mb-2 md:mb-0">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+              <input
+                type="text"
+                value={option.title}
+                onChange={(e) => handleChange(idx, "title", e.target.value)}
+                className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
+                placeholder="Deal title"
+              />
+            </div>
+            <div className="flex-1 mb-2 md:mb-0">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Original Price</label>
+              <input
+                type="text"
+                value={option.originalPrice}
+                onChange={(e) => handleChange(idx, "originalPrice", e.target.value)}
+                className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
+                placeholder="e.g. 1000"
+              />
+            </div>
+            <div className="flex-1 mb-2 md:mb-0">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Discount (%)</label>
+              <input
+                type="text"
+                value={option.discountPercentage}
+                onChange={(e) => handleChange(idx, "discountPercentage", e.target.value)}
+                className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
+                placeholder="e.g. 10"
+              />
+            </div>
+            <div className="flex-1 mb-2 md:mb-0">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Discounted Price</label>
+              <input
+                type="text"
+                value={option.discountedPrice}
+                onChange={(e) => handleChange(idx, "discountedPrice", e.target.value)}
+                className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
+                placeholder="e.g. 900"
+              />
+            </div>
           </div>
-          <div className="mt-2 text-green-700 font-semibold">
-            Total: {
-              (() => {
-                const price = parseFloat(option.originalPrice || "0");
-                const discount = parseFloat(option.discountPercentage || "0");
-                if (isNaN(price) || isNaN(discount)) return "$0.00";
-                const total = price - (price * discount / 100);
-                return `$${total.toFixed(2)}`;
-              })()
-            }
-          </div>
+
         </div>
       ))}
       <button

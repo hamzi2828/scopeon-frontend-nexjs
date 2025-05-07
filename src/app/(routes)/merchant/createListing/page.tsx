@@ -6,6 +6,9 @@ import Amenities from "./components/Amenities";
 import Description from "./components/Description";
 import Highlights from "./components/Highlights";
 import DealOptionsBuilder from "./components/DealOptionsBuilder";
+import PromoCodeSection from "./components/PromoCodeSection";
+import SalePeriodSection from "./components/SalePeriodSection";
+import BadgeToggles from "./components/BadgeToggles";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 const initialDealOption = {
   title: "",
@@ -32,6 +35,18 @@ const CreateListing = () => {
   const [title, setTitle] = useState("");
   const [phone, setPhone] = useState("");
   const [website, setWebsite] = useState("");
+  // Badge toggles
+  const [showBestRated, setShowBestRated] = useState(false);
+  const [showBought, setShowBought] = useState(false);
+  const [showSellingFast, setShowSellingFast] = useState(false);
+  // Sale period
+  const [startSaleDate, setStartSaleDate] = useState("");
+  const [endSaleDate, setEndSaleDate] = useState("");
+  // Promo code
+  const [promoCode, setPromoCode] = useState("");
+  const [promoDiscount, setPromoDiscount] = useState("");
+  const [promoType, setPromoType] = useState("percent");
+  const [promoValidUntil, setPromoValidUntil] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +62,15 @@ const CreateListing = () => {
     formData.append("website", website);
     formData.append("amenities", JSON.stringify(amenities));
     formData.append("dealOptions", JSON.stringify(dealOptions));
+    formData.append("showBestRated", JSON.stringify(showBestRated));
+    formData.append("showBought", JSON.stringify(showBought));
+    formData.append("showSellingFast", JSON.stringify(showSellingFast));
+    formData.append("startSaleDate", startSaleDate);
+    formData.append("endSaleDate", endSaleDate);
+    formData.append("promoCode", promoCode);
+    formData.append("promoDiscount", promoDiscount);
+    formData.append("promoType", promoType);
+    formData.append("promoValidUntil", promoValidUntil);
     photos.forEach((photo) => {
       formData.append("photos", photo);
     });
@@ -61,6 +85,23 @@ const CreateListing = () => {
         throw new Error((await res.json()).message || "Failed to create listing");
       }
       setSuccess("Listing created successfully!");
+      setTitle("");
+      setPhone("");
+      setWebsite("");
+      setDescription("");
+      setHighlights("");
+      setAmenities([""]);
+      setPhotos([]);
+      setDealOptions([initialDealOption]);
+      setShowBestRated(false);
+      setShowBought(false);
+      setShowSellingFast(false);
+      setStartSaleDate("");
+      setEndSaleDate("");
+      setPromoCode("");
+      setPromoDiscount("");
+      setPromoType("percent");
+      setPromoValidUntil("");
     } catch (err: unknown) {
       const errMessage = (err as Error).message || "Something went wrong";
       setError(errMessage);
@@ -71,46 +112,71 @@ const CreateListing = () => {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-3xl mx-auto p-4 space-y-4">
-    <div className="max-w-3xl mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-2 text-gray-900">Create Your Listing</h1>
-      <p className="text-gray-600 mb-4 text-lg">Fill in the details below to showcase your business and attract more customers.</p>
-      <input
-        type="text"
-        value={title}
-        onChange={e => setTitle(e.target.value)}
-        placeholder="Enter listing title"
-        className="w-full border border-gray-300 rounded-md p-2 mb-4 text-gray-900 text-lg"
-        required
-      />
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <div>
-          <label htmlFor="phone" className="block text-gray-700 mb-1">Phone Number</label>
-          <input
-            id="phone"
-            type="tel"
-            value={phone}
-            onChange={e => setPhone(e.target.value)}
-            placeholder="Enter phone number"
-            className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
-            required
-          />
-        </div>
-        
-        <div>
-          <label htmlFor="website" className="block text-gray-700 mb-1">Website</label>
-          <input
-            id="website"
-            type="url"
-            value={website}
-            onChange={e => setWebsite(e.target.value)}
-            placeholder="Enter website URL (e.g., https://example.com)"
-            className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
-            required
-          />
+      <div className="max-w-3xl mx-auto p-4">
+        <h1 className="text-3xl font-bold mb-2 text-gray-900">Create Your Listing</h1>
+        <p className="text-gray-600 mb-4 text-lg">Fill in the details below to showcase your business and attract more customers.</p>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Enter listing title"
+          className="w-full border border-gray-300 rounded-md p-2 mb-4 text-gray-900 text-lg"
+          required
+        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label htmlFor="phone" className="block text-gray-700 mb-1">Phone Number</label>
+            <input
+              id="phone"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Enter phone number"
+              className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="website" className="block text-gray-700 mb-1">Website</label>
+            <input
+              id="website"
+              type="url"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              placeholder="Enter website URL (e.g., https://example.com)"
+              className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
+              required
+            />
+          </div>
         </div>
       </div>
-    </div>
+      {/* Promo Code Section */}
+      <PromoCodeSection
+        promoCode={promoCode}
+        setPromoCode={setPromoCode}
+        promoDiscount={promoDiscount}
+        setPromoDiscount={setPromoDiscount}
+        promoType={promoType}
+        setPromoType={setPromoType}
+        promoValidUntil={promoValidUntil}
+        setPromoValidUntil={setPromoValidUntil}
+      />
+      {/* Sale Period */}
+      <SalePeriodSection
+        startSaleDate={startSaleDate}
+        setStartSaleDate={setStartSaleDate}
+        endSaleDate={endSaleDate}
+        setEndSaleDate={setEndSaleDate}
+      />
+      {/* Badge Toggles */}
+      <BadgeToggles
+        showBestRated={showBestRated}
+        setShowBestRated={setShowBestRated}
+        showBought={showBought}
+        setShowBought={setShowBought}
+        showSellingFast={showSellingFast}
+        setShowSellingFast={setShowSellingFast}
+      />
       <Description value={description} onChange={setDescription} />
       <Highlights value={highlights} onChange={setHighlights} />
       <Amenities value={amenities} onChange={setAmenities} />
