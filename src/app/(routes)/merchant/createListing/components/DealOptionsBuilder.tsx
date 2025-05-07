@@ -14,6 +14,7 @@ interface DealOption {
   codeInfo: string;
   purchaseInfo: string;
   giftIcon: boolean;
+  discountType: 'percentage' | 'flat';
 }
 
 const emptyOption = (): DealOption => ({
@@ -27,6 +28,7 @@ const emptyOption = (): DealOption => ({
   codeInfo: "",
   purchaseInfo: "",
   giftIcon: false,
+  discountType: 'percentage',
 });
 
 interface DealOptionsBuilderProps {
@@ -73,8 +75,8 @@ const DealOptionsBuilder: React.FC<DealOptionsBuilderProps> = ({ value = [], onC
           >
             <FaTrash />
           </button>
-          <div className="flex flex-col md:flex-row md:space-x-4">
-            <div className="flex-1 mb-2 md:mb-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
               <input
                 type="text"
@@ -84,7 +86,7 @@ const DealOptionsBuilder: React.FC<DealOptionsBuilderProps> = ({ value = [], onC
                 placeholder="Deal title"
               />
             </div>
-            <div className="flex-1 mb-2 md:mb-0">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Original Price</label>
               <input
                 type="text"
@@ -94,28 +96,55 @@ const DealOptionsBuilder: React.FC<DealOptionsBuilderProps> = ({ value = [], onC
                 placeholder="e.g. 1000"
               />
             </div>
-            <div className="flex-1 mb-2 md:mb-0">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Discount (%)</label>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Discount Type</label>
+              <select
+                value={option.discountType}
+                onChange={(e) => handleChange(idx, "discountType", e.target.value as 'percentage' | 'flat')}
+                className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
+              >
+                <option value="percentage">Percentage (%)</option>
+                <option value="flat">Flat Amount</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {option.discountType === 'percentage' ? 'Discount (%)' : 'Discount Amount'}
+              </label>
               <input
                 type="text"
                 value={option.discountPercentage}
                 onChange={(e) => handleChange(idx, "discountPercentage", e.target.value)}
                 className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
-                placeholder="e.g. 10"
+                placeholder={option.discountType === 'percentage' ? 'e.g. 10' : 'e.g. 100'}
               />
             </div>
-            <div className="flex-1 mb-2 md:mb-0">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Discounted Price</label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Final Price</label>
               <input
                 type="text"
-                value={option.discountedPrice}
-                onChange={(e) => handleChange(idx, "discountedPrice", e.target.value)}
-                className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
-                placeholder="e.g. 900"
+                value={
+                  (() => {
+                    const price = parseFloat(option.originalPrice || "0");
+                    const discount = parseFloat(option.discountPercentage || "0");
+                    if (isNaN(price) || isNaN(discount)) return "";
+                    
+                    const total = option.discountType === 'percentage'
+                      ? price - (price * discount / 100)
+                      : price - discount;
+                      
+                    return `RS ${Math.max(0, total).toFixed(2)}`;
+                  })()
+                }
+                disabled
+                className="w-full border border-green-300 bg-green-50 rounded-md p-2 text-green-700 font-semibold"
+                placeholder="Calculated price"
               />
             </div>
           </div>
-
         </div>
       ))}
       <button

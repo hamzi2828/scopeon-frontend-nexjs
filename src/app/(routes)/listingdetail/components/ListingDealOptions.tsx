@@ -14,24 +14,43 @@ interface DealOption {
   codeInfo?: string;
   purchaseInfo?: string;
   giftIcon?: boolean;
-}
-
-interface SpaOption extends DealOption {
-  giftIcon: boolean;
+  discountType?: 'percentage' | 'flat';
 }
 
 interface Props {
   dealOptions?: DealOption[];
-  spaOptions: SpaOption[];
+  promoCode?: string;
+  promoDiscount?: number;
+  promoType?: string;
 }
 
-const ListingDealOptions: React.FC<Props> = ({ dealOptions, spaOptions }) => {
-  const options = dealOptions && dealOptions.length > 0 ? dealOptions : spaOptions;
+const ListingDealOptions: React.FC<Props> = ({ dealOptions, promoCode, promoDiscount, promoType }) => {
+  // Calculate the price after applying promo code discount
+  const calculatePriceWithPromo = (finalPrice: string, discount: number, type?: string): string => {
+    const price = parseFloat(finalPrice);
+    if (isNaN(price)) return '0.00';
+    
+    let finalPriceAfterPromo = price;
+    
+    if (type === 'percent') {
+      // Apply percentage discount
+      finalPriceAfterPromo = price - (price * discount / 100);
+    } else {
+      // Apply flat discount
+      finalPriceAfterPromo = price - discount;
+    }
+    
+    // Ensure price is never negative
+    finalPriceAfterPromo = Math.max(0, finalPriceAfterPromo);
+    
+    return finalPriceAfterPromo.toFixed(2);
+  };
+  
+  const options = dealOptions || [];
   return (
     <div className="p-3 bg-gray-200 rounded-lg">
-      {options.map((option, idx) => {
-        const dummy = spaOptions[idx % spaOptions.length];
-        return (
+      {options.length > 0 ? options.map((option, idx) => (
+        
           <label
             key={option._id || option.id || idx}
             htmlFor={option._id || option.id || `option-${idx}`}
@@ -46,40 +65,52 @@ const ListingDealOptions: React.FC<Props> = ({ dealOptions, spaOptions }) => {
                   className="mr-2"
                 />
                 <span className="font-semibold text-gray-800">
-                  {option.title || dummy.title}
+                  {option.title}
                 </span>
               </div>
-              {(option.giftIcon ?? dummy.giftIcon) && <FaGift className="text-gray-400" />}
+              {option.giftIcon && <FaGift className="text-gray-400" />}
             </div>
             <div>
               <div className="flex items-center">
                 <span className="text-sm line-through text-gray-500 mr-2">
-                  {option.originalPrice || dummy.originalPrice}
+                  RS {option.originalPrice}
                 </span>
                 <span className="text-sm text-green-600 font-semibold">
-                  {option.discountedPrice || dummy.discountedPrice}
+                  RS {option.discountedPrice || option.finalPrice}
                 </span>
               </div>
             </div>
             <div className="text-lg font-bold text-red-600">
-              {option.finalPrice || dummy.finalPrice}{" "}
+              RS {option.finalPrice}{" "}
               <span className="text-sm text-gray-600">
-                {option.discountPercentage || dummy.discountPercentage}
+                {option.discountType === 'percentage' ? `${option.discountPercentage || ''}% off` : ''}
               </span>
             </div>
             <div className="text-sm text-red-600">
-              {option.extraOffer || dummy.extraOffer}
+              {promoDiscount && promoCode 
+                ? `Extra ${promoType === 'percent' ? `${promoDiscount}% off` : `RS ${promoDiscount} off`}` 
+                : (option.extraOffer || '')}
             </div>
             <div className="text-sm text-purple-600">
-              {option.finalDiscountedPrice || dummy.finalDiscountedPrice}{" "}
-              <span className="text-gray-600">{option.codeInfo || dummy.codeInfo}</span>
+              {promoDiscount && promoCode && option.finalPrice ? (
+                <>
+                  RS {calculatePriceWithPromo(option.finalPrice, promoDiscount, promoType)}
+                  <span className="text-gray-600"> with code {promoCode}</span>
+                </>
+              ) : (
+                <>
+                  {option.finalDiscountedPrice && `RS ${option.finalDiscountedPrice}`}{" "}
+                  {promoCode && <span className="text-gray-600">with code {promoCode}</span>}
+                </>
+              )}
             </div>
             <div className="text-sm text-gray-500">
-              {option.purchaseInfo || dummy.purchaseInfo}
+              {option.purchaseInfo || ''}
             </div>
           </label>
-        );
-      })}
+      )) : (
+        <div className="text-center py-4 text-gray-600">No deal options available</div>
+      )}
     </div>
   );
 };

@@ -14,6 +14,7 @@ interface DealOption {
   codeInfo: string;
   purchaseInfo: string;
   giftIcon: boolean;
+  discountType: 'percentage' | 'flat';
 }
 
 const emptyOption = (): DealOption => ({
@@ -27,6 +28,7 @@ const emptyOption = (): DealOption => ({
   codeInfo: "",
   purchaseInfo: "",
   giftIcon: false,
+  discountType: 'percentage',
 });
 
 interface DealOptionsBuilderProps {
@@ -61,7 +63,7 @@ const DealOptionsBuilder: React.FC<DealOptionsBuilderProps> = ({ value = [], onC
 
   return (
     <div className="max-w-3xl mx-auto p-4">
-      <h2 className="text-xl font-semibold mb-4">Create Deal Options</h2>
+      <h2 className="text-xl font-semibold mb-4">Edit Deal Options</h2>
       {value.map((option, idx) => (
         <div key={idx} className="border p-4 rounded mb-4 bg-white shadow-sm relative">
           <button
@@ -73,40 +75,75 @@ const DealOptionsBuilder: React.FC<DealOptionsBuilderProps> = ({ value = [], onC
           >
             <FaTrash />
           </button>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
-            <input
-              className="border rounded px-3 py-2"
-              placeholder="Title"
-              value={option.title}
-              onChange={e => handleChange(idx, "title", e.target.value)}
-            />
-            <input
-              className="border rounded px-3 py-2"
-              type="number"
-              min="0"
-              placeholder="Original Price"
-              value={option.originalPrice}
-              onChange={e => handleChange(idx, "originalPrice", e.target.value)}
-            />
-            <input
-              className="border rounded px-3 py-2"
-              type="number"
-              min="0"
-              placeholder="Discount %"
-              value={option.discountPercentage}
-              onChange={e => handleChange(idx, "discountPercentage", e.target.value)}
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+              <input
+                type="text"
+                value={option.title}
+                onChange={(e) => handleChange(idx, "title", e.target.value)}
+                className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
+                placeholder="Deal title"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Original Price</label>
+              <input
+                type="text"
+                value={option.originalPrice}
+                onChange={(e) => handleChange(idx, "originalPrice", e.target.value)}
+                className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
+                placeholder="e.g. 1000"
+              />
+            </div>
           </div>
-          <div className="mt-2 text-green-700 font-semibold">
-            Total: {
-              (() => {
-                const price = parseFloat(option.originalPrice || "0");
-                const discount = parseFloat(option.discountPercentage || "0");
-                if (isNaN(price) || isNaN(discount)) return "$0.00";
-                const total = price - (price * discount / 100);
-                return `$${total.toFixed(2)}`;
-              })()
-            }
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Discount Type</label>
+              <select
+                value={option.discountType}
+                onChange={(e) => handleChange(idx, "discountType", e.target.value as 'percentage' | 'flat')}
+                className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
+              >
+                <option value="percentage">Percentage (%)</option>
+                <option value="flat">Flat Amount</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {option.discountType === 'percentage' ? 'Discount (%)' : 'Discount Amount'}
+              </label>
+              <input
+                type="text"
+                value={option.discountPercentage}
+                onChange={(e) => handleChange(idx, "discountPercentage", e.target.value)}
+                className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
+                placeholder={option.discountType === 'percentage' ? 'e.g. 10' : 'e.g. 100'}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Final Price</label>
+              <input
+                type="text"
+                value={
+                  (() => {
+                    const price = parseFloat(option.originalPrice || "0");
+                    const discount = parseFloat(option.discountPercentage || "0");
+                    if (isNaN(price) || isNaN(discount)) return "";
+                    
+                    const total = option.discountType === 'percentage'
+                      ? price - (price * discount / 100)
+                      : price - discount;
+                      
+                    return `RS ${Math.max(0, total).toFixed(2)}`;
+                  })()
+                }
+                disabled
+                className="w-full border border-green-300 bg-green-50 rounded-md p-2 text-green-700 font-semibold"
+                placeholder="Calculated price"
+              />
+            </div>
           </div>
         </div>
       ))}

@@ -9,6 +9,7 @@ import {
   FaInfoCircle,
   FaTag,
 } from "react-icons/fa";
+import CountdownTimer from "./components/CountdownTimer";
 import ListingDetailSlider from "../../components/website/listingdetail/ListingDetailSlider";
 import ListingAmenities from "./components/ListingAmenities";
 import ListingReviews from "./components/ListingReviews";
@@ -19,48 +20,7 @@ import ListingHeader from "./components/ListingHeader";
 import ListingDealOptions from "./components/ListingDealOptions";
 import { Suspense } from "react";
 
-interface SpaOption {
-  id: string;
-  title: string;
-  originalPrice: string;
-  discountedPrice: string;
-  finalPrice: string;
-  discountPercentage: string;
-  extraOffer: string;
-  finalDiscountedPrice: string;
-  codeInfo: string;
-  purchaseInfo: string;
-  giftIcon: boolean;
-}
-
-const spaOptions: SpaOption[] = [
-  {
-    id: "option1",
-    title: "Spa Admission",
-    originalPrice: "$45.00",
-    discountedPrice: "$35.00",
-    finalPrice: "$35.00",
-    discountPercentage: "22% off",
-    extraOffer: "Extra $3.78 off",
-    finalDiscountedPrice: "$31.22",
-    codeInfo: "with code HURRYNOW",
-    purchaseInfo: "10,000+ bought",
-    giftIcon: true,
-  },
-  {
-    id: "option2",
-    title: "Spa Admission + Massage",
-    originalPrice: "$85.00",
-    discountedPrice: "$65.00",
-    finalPrice: "$65.00",
-    discountPercentage: "24% off",
-    extraOffer: "Extra $3.78 off",
-    finalDiscountedPrice: "$61.22",
-    codeInfo: "with code HURRYNOW",
-    purchaseInfo: "5,000+ bought",
-    giftIcon: true,
-  },
-];
+// Only using the actual listing data, no hardcoded options
 
 import { useEffect, useState } from "react";
 interface DealOption {
@@ -87,10 +47,12 @@ interface Listing {
   amenities?: string[];
   photos?: string[];
   isFeature?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-  openStatus?: string;
-  closeStatus?: string;
+  startSaleDate?: string;
+  endSaleDate?: string;
+  promoCode?: string;
+  promoDiscount?: number;
+  promoType?: string;
+  promoValidUntil?: string;
   address?: string;
   website?: string;
   phone?: string;
@@ -192,33 +154,37 @@ const ListingDetailContent = () => {
           </div>
           <div className="md:col-span-1 col-span-3">
             <div className="p-6">
-              <div className="flex items-center justify-center bg-red-100 text-red-600 p-2 rounded-lg shadow-md">
-                <FaClock className="mr-2" />
-                <span>Sale ends in 0 days 16:23:15</span>
-              </div>
-              <div className="border border-dashed border-purple-300 rounded-lg p-4 bg-purple-50 flex justify-between items-center my-3">
-                <div className="flex items-center">
-                  <FaTag className="text-gray-500 mr-2" />
-                  <div>
-                    <div className="text-sm font-medium text-gray-700">
-                      Extra $3.78 off
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      Promo code{" "}
-                      <span className="text-purple-600 font-semibold">
-                        HURRYNOW
-                      </span>{" "}
-                      ends in <span className="font-bold">06:33:49</span>
+              {listing.endSaleDate && (
+                <div className="flex items-center justify-center bg-red-100 text-red-600 p-2 rounded-lg shadow-md">
+                  <FaClock className="mr-2" />
+                  <span>Sale ends in <CountdownTimer targetDate={new Date(listing.endSaleDate)} /></span>
+                </div>
+              )}
+              {listing.promoCode && listing.promoDiscount && listing.promoValidUntil && (
+                <div className="border border-dashed border-purple-300 rounded-lg p-4 bg-purple-50 flex justify-between items-center my-3">
+                  <div className="flex items-center">
+                    <FaTag className="text-gray-500 mr-2" />
+                    <div>
+                      <div className="text-sm font-medium text-gray-700">
+                        Extra {listing.promoType === 'percent' ? `${listing.promoDiscount}% off` : `RS ${listing.promoDiscount} off`}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Promo code{" "}
+                        <span className="text-purple-600 font-semibold">
+                          {listing.promoCode}
+                        </span>{" "}
+                        ends in <span className="font-bold"><CountdownTimer targetDate={new Date(listing.promoValidUntil)} /></span>
+                      </div>
                     </div>
                   </div>
+                  <a
+                    href="#"
+                    className="text-purple-600 text-sm font-medium hover:underline hidden"
+                  >
+                    Apply
+                  </a>
                 </div>
-                <a
-                  href="#"
-                  className="text-purple-600 text-sm font-medium hover:underline hidden"
-                >
-                  Apply
-                </a>
-              </div>
+              )}
               <div className="flex items-center justify-between my-3">
                 <label className="text-gray-700 font-semibold">
                   Select Option:
@@ -234,7 +200,12 @@ const ListingDetailContent = () => {
                   </label>
                 </div>
               </div>
-              <ListingDealOptions dealOptions={listing.dealOptions} spaOptions={spaOptions} />
+              <ListingDealOptions 
+                dealOptions={listing.dealOptions} 
+                promoCode={listing.promoCode}
+                promoDiscount={listing.promoDiscount}
+                promoType={listing.promoType}
+              />
               <button className="w-full bg-green-600 text-white font-semibold py-2 rounded-lg hover:bg-green-700 transition duration-300 mt-2">
                 Buy now
               </button>

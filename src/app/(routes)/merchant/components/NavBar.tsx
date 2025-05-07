@@ -24,11 +24,7 @@ const Navbar = () => {
           className="fixed inset-0 bg-black bg-opacity-50 z-40"
         />
       )}
-      <div className="flex items-center space-x-4">
-        <a href="#" className="text-gray-600 hover:text-orange-600 border-0 hover:border-b border-orange-600 duration-100 md:block hidden">Help</a>
-        <a href="#" className="text-gray-600 hover:text-orange-600 border-0 hover:border-b border-orange-600 duration-100 md:block hidden">Preview</a>
-        <a href="#" className="text-gray-600 hover:text-orange-600 border-0 hover:border-b border-orange-600 duration-100 text-nowrap">Save and exit</a>
-      </div>
+
       <div className={`fixed inset-0 z-50 bg-white w-56 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out`}>
         <div className="p-4">
           <button onClick={toggleSidebar} className="text-gray-600 hover:bg-gray-100 p-2 rounded-md">
