@@ -2,6 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+interface BusinessType {
+  _id: string;
+  name: string;
+  description?: string;
+}
+
 interface Listing {
   _id: string;
   title: string;
@@ -11,7 +17,10 @@ interface Listing {
   amenities?: string[];
   photos?: string[];
   isFeature?: boolean;
-  // Add other fields as needed
+  businessName?: string;
+  address?: string;
+  businessType?: BusinessType | string;
+  phone?: string;
 }
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;  // Replace with your API base URL
 
@@ -82,93 +91,76 @@ const AllListingsPage = () => {
   if (error) return <div style={{color:'red'}}>Error: {error}</div>;
 
   return (
-    <div style={{ padding: 24 }}>
-      <h1>All Listings</h1>
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 20 }}>
-        <thead>
-          <tr style={{ background: '#f0f0f0' }}>
-            <th style={{ border: '1px solid #ccc', padding: 8 }}>Title</th>
-            <th style={{ border: '1px solid #ccc', padding: 8 }}>Slug</th>
-            <th style={{ border: '1px solid #ccc', padding: 8 }}>Description</th>
-            <th style={{ border: '1px solid #ccc', padding: 8 }}>Featured</th>
-            <th style={{ border: '1px solid #ccc', padding: 8 }}>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {listings.map(listing => (
-            <tr key={listing._id}>
-              <td style={{ border: '1px solid #ccc', padding: 8 }}>{listing.title}</td>
-              <td style={{ border: '1px solid #ccc', padding: 8 }}>{listing.slug}</td>
-              <td style={{ border: '1px solid #ccc', padding: 8 }}>{listing.description?.slice(0, 40)}...</td>
-              <td style={{ border: '1px solid #ccc', padding: 8, textAlign: 'center' }}>
-                <div 
-                  onClick={() => toggleLoading !== listing._id && toggleFeature(listing._id)}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    cursor: toggleLoading === listing._id ? 'wait' : 'pointer',
-                    opacity: toggleLoading === listing._id ? 0.7 : 1
-                  }}
+    <div className="py-1 px-1 bg-gray-50 min-h-screen">
+      <div className="max-w-full mx-auto">
+        <h1 className="text-xl font-bold mb-1 text-gray-900">All Listings</h1>
+        <p className="text-gray-600 mb-2 text-xs">Manage your business listings. Edit, feature, or delete as needed.</p>
+        <div className="overflow-x-auto rounded-md shadow bg-white">
+          <table className="min-w-full divide-y divide-gray-200 text-xs">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-2 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider whitespace-nowrap">Title</th>
+                <th className="px-2 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider whitespace-nowrap">Slug</th>
+                <th className="px-2 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider whitespace-nowrap">Business Name</th>
+                <th className="px-2 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider whitespace-nowrap">Address</th>
+                <th className="px-2 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider whitespace-nowrap">Type</th>
+                <th className="px-2 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider whitespace-nowrap">Phone</th>
+                <th className="px-2 py-2 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider whitespace-nowrap">Featured</th>
+                <th className="px-2 py-2 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider whitespace-nowrap">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {listings.map((listing, idx) => (
+                <tr
+                  key={listing._id}
+                  className={
+                    idx % 2 === 0 ? "bg-white hover:bg-orange-50 transition" : "bg-gray-50 hover:bg-orange-50 transition"
+                  }
                 >
-                  <div style={{
-                    position: 'relative',
-                    width: '40px',
-                    height: '20px',
-                    backgroundColor: listing.isFeature ? '#4CAF50' : '#ccc',
-                    borderRadius: '10px',
-                    transition: 'background-color 0.3s',
-                    marginRight: '8px'
-                  }}>
-                    <div style={{
-                      position: 'absolute',
-                      left: listing.isFeature ? '20px' : '0px',
-                      top: '0px',
-                      width: '20px',
-                      height: '20px',
-                      backgroundColor: 'white',
-                      borderRadius: '50%',
-                      transition: 'left 0.3s',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-                    }}></div>
-                  </div>
-                  <span style={{ fontSize: '14px' }}>
-                    {toggleLoading === listing._id ? 'Updating...' : (listing.isFeature ? 'On' : 'Off')}
-                  </span>
-                </div>
-              </td>
-              <td style={{ border: '1px solid #ccc', padding: 8 }}>
-                <button 
-                  onClick={() => router.push(`/merchant/editListing/${listing._id}`)} 
-                  style={{
-                    marginRight: 8,
-                    padding: '6px 12px',
-                    backgroundColor: '#4285F4',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Edit
-                </button>
-                <button 
-                  onClick={() => deleteListing(listing._id)}
-                  style={{
-                    padding: '6px 12px',
-                    backgroundColor: '#DC3545',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  <td className="px-2 py-1 max-w-xs truncate" title={listing.title}>{listing.title}</td>
+                  <td className="px-2 py-1 max-w-xs truncate" title={listing.slug}>{listing.slug}</td>
+                  <td className="px-2 py-1 max-w-xs truncate" title={listing.businessName}>{listing.businessName || '-'}</td>
+                  <td className="px-2 py-1 max-w-xs truncate" title={listing.address}>{listing.address || '-'}</td>
+                  <td className="px-2 py-1 max-w-xs truncate" title={typeof listing.businessType === 'object' && listing.businessType?.name ? listing.businessType.name : typeof listing.businessType === 'string' && listing.businessType ? listing.businessType : '-'}>
+                    {typeof listing.businessType === 'object' && listing.businessType?.name
+                      ? listing.businessType.name
+                      : typeof listing.businessType === 'string' && listing.businessType
+                      ? listing.businessType
+                      : '-'}
+                  </td>
+                  <td className="px-2 py-1 max-w-xs truncate" title={listing.phone}>{listing.phone || '-'}</td>
+                  <td className="px-2 py-1 text-center">
+                    <button
+                      onClick={() => toggleLoading !== listing._id && toggleFeature(listing._id)}
+                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold transition focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-orange-500 ${listing.isFeature ? 'bg-green-100 text-green-700 border border-green-300' : 'bg-gray-200 text-gray-700 border border-gray-300'} ${toggleLoading === listing._id ? 'opacity-60 cursor-wait' : 'hover:bg-orange-100 cursor-pointer'}`}
+                      disabled={toggleLoading === listing._id}
+                    >
+                      <span
+                        className={`inline-block w-2 h-2 rounded-full mr-1 ${listing.isFeature ? 'bg-green-500' : 'bg-gray-400'}`}
+                      ></span>
+                      {toggleLoading === listing._id ? 'Updating...' : (listing.isFeature ? 'On' : 'Off')}
+                    </button>
+                  </td>
+                  <td className="px-2 py-1 text-center">
+                    <button
+                      onClick={() => router.push(`/merchant/editListing/${listing._id}`)}
+                      className="mr-1 px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded shadow text-xs font-semibold transition"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deleteListing(listing._id)}
+                      className="px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded shadow text-xs font-semibold transition"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };
