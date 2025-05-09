@@ -9,6 +9,7 @@ import DealOptionsBuilder from "./components/DealOptionsBuilder";
 import PromoCodeSection from "./components/PromoCodeSection";
 import SalePeriodSection from "./components/SalePeriodSection";
 import BadgeToggles from "./components/BadgeToggles";
+import MetaFields from "./components/MetaFields";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 const initialDealOption = {
   title: "",
@@ -36,7 +37,11 @@ const CreateListing = () => {
   const [title, setTitle] = useState("");
   const [phone, setPhone] = useState("");
   const [website, setWebsite] = useState("");
+  const [businessName, setBusinessName] = useState("");
   const [address, setAddress] = useState("");
+  const [metaTitle, setMetaTitle] = useState("");
+  const [metaDescription, setMetaDescription] = useState("");
+  const [metaSchema, setMetaSchema] = useState<string[]>([""]);
   // Badge toggles
   const [showBestRated, setShowBestRated] = useState(false);
   const [showBought, setShowBought] = useState(false);
@@ -86,6 +91,10 @@ const CreateListing = () => {
     formData.append("phone", phone);
     formData.append("website", website);
     formData.append("address", address);
+    formData.append("metaTitle", metaTitle);
+    formData.append("metaDescription", metaDescription);
+    formData.append("metaSchema", JSON.stringify(metaSchema));
+    formData.append("businessName", businessName);
     formData.append("amenities", JSON.stringify(amenities));
     formData.append("dealOptions", JSON.stringify(calculatedDealOptions));
     formData.append("showBestRated", JSON.stringify(showBestRated));
@@ -115,6 +124,10 @@ const CreateListing = () => {
       setPhone("");
       setWebsite("");
       setAddress("");
+      setMetaTitle("");
+      setMetaDescription("");
+      setMetaSchema([""]);
+      setBusinessName("");
       setDescription("");
       setHighlights("");
       setAmenities([""]);
@@ -193,6 +206,19 @@ const CreateListing = () => {
             </div>
           </div>
           <div className="mb-6">
+            <label htmlFor="businessName" className="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
+            <input
+              id="businessName"
+              type="text"
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              placeholder="Enter business name"
+              className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+              required
+            />
+          </div>
+
+          <div className="mb-6">
             <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">Business Address</label>
             <input
               id="address"
@@ -202,6 +228,18 @@ const CreateListing = () => {
               placeholder="Enter business address"
               className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
               required
+            />
+          </div>
+
+          {/* Meta Fields Section */}
+          <div className="mb-6">
+            <MetaFields
+              metaTitle={metaTitle}
+              setMetaTitle={setMetaTitle}
+              metaDescription={metaDescription}
+              setMetaDescription={setMetaDescription}
+              metaSchema={metaSchema}
+              setMetaSchema={setMetaSchema}
             />
           </div>
         </div>

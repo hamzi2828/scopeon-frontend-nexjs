@@ -10,6 +10,7 @@ import DealOptionsBuilder from './components/DealOptionsBuilder';
 import PromoCodeSection from './components/PromoCodeSection';
 import SalePeriodSection from './components/SalePeriodSection';
 import BadgeToggles from './components/BadgeToggles';
+import MetaFields from './components/MetaFields';
 
 interface DealOption {
   title: string;
@@ -79,7 +80,11 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
   const [title, setTitle] = useState("");
   const [phone, setPhone] = useState("");
   const [website, setWebsite] = useState("");
+  const [businessName, setBusinessName] = useState("");
   const [address, setAddress] = useState("");
+  const [metaTitle, setMetaTitle] = useState("");
+  const [metaDescription, setMetaDescription] = useState("");
+  const [metaSchema, setMetaSchema] = useState<string[]>([""]);
   const [description, setDescription] = useState("");
   const [highlights, setHighlights] = useState("");
   const [amenities, setAmenities] = useState<string[]>([""]);  
@@ -119,7 +124,11 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
         setTitle(data.title || '');
         setPhone(data.phone || '');
         setWebsite(data.website || '');
+        setBusinessName(data.businessName || '');
         setAddress(data.address || '');
+        setMetaTitle(data.metaTitle || '');
+        setMetaDescription(data.metaDescription || '');
+        setMetaSchema(Array.isArray(data.metaSchema) && data.metaSchema.length > 0 ? data.metaSchema : [""]);
         setDescription(data.description || '');
         setHighlights(data.highlights || '');
         setAmenities(Array.isArray(data.amenities) && data.amenities.length > 0 ? data.amenities : [""]);
@@ -194,7 +203,11 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
       formData.append("website", website);
       formData.append("description", description);
       formData.append("highlights", highlights);
+      formData.append("businessName", businessName);
       formData.append("address", address);
+      formData.append("metaTitle", metaTitle);
+      formData.append("metaDescription", metaDescription);
+      formData.append("metaSchema", JSON.stringify(metaSchema));
       formData.append("amenities", JSON.stringify(amenities));
       formData.append("dealOptions", JSON.stringify(calculatedDealOptions));
       
@@ -308,7 +321,18 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
               />
             </div>
           </div>
-          {/* Business Address Field */}
+          <div className="mb-6">
+            <label htmlFor="businessName" className="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
+            <input
+              id="businessName"
+              type="text"
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              placeholder="Enter business name"
+              className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+              required
+            />
+          </div>
           <div className="mb-6">
             <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">Business Address</label>
             <input
@@ -319,6 +343,18 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
               placeholder="Enter business address"
               className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
               required
+            />
+          </div>
+
+          {/* Meta Fields Section */}
+          <div className="mb-6">
+            <MetaFields
+              metaTitle={metaTitle}
+              setMetaTitle={setMetaTitle}
+              metaDescription={metaDescription}
+              setMetaDescription={setMetaDescription}
+              metaSchema={metaSchema}
+              setMetaSchema={setMetaSchema}
             />
           </div>
         </div>
