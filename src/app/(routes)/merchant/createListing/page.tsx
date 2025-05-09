@@ -36,6 +36,7 @@ const CreateListing = () => {
   const [title, setTitle] = useState("");
   const [phone, setPhone] = useState("");
   const [website, setWebsite] = useState("");
+  const [address, setAddress] = useState("");
   // Badge toggles
   const [showBestRated, setShowBestRated] = useState(false);
   const [showBought, setShowBought] = useState(false);
@@ -84,6 +85,7 @@ const CreateListing = () => {
     formData.append("highlights", highlights);
     formData.append("phone", phone);
     formData.append("website", website);
+    formData.append("address", address);
     formData.append("amenities", JSON.stringify(amenities));
     formData.append("dealOptions", JSON.stringify(calculatedDealOptions));
     formData.append("showBestRated", JSON.stringify(showBestRated));
@@ -112,6 +114,7 @@ const CreateListing = () => {
       setTitle("");
       setPhone("");
       setWebsite("");
+      setAddress("");
       setDescription("");
       setHighlights("");
       setAmenities([""]);
@@ -188,6 +191,18 @@ const CreateListing = () => {
                 required
               />
             </div>
+          </div>
+          <div className="mb-6">
+            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">Business Address</label>
+            <input
+              id="address"
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Enter business address"
+              className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+              required
+            />
           </div>
         </div>
 

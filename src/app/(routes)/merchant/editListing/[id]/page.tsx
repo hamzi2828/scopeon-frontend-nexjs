@@ -35,6 +35,7 @@ interface Listing {
   photos?: string[];
   phone?: string;
   website?: string;
+  address?: string;
   dealOptions?: DealOption[];
   isFeature?: boolean;
   showBestRated?: boolean;
@@ -78,6 +79,7 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
   const [title, setTitle] = useState("");
   const [phone, setPhone] = useState("");
   const [website, setWebsite] = useState("");
+  const [address, setAddress] = useState("");
   const [description, setDescription] = useState("");
   const [highlights, setHighlights] = useState("");
   const [amenities, setAmenities] = useState<string[]>([""]);  
@@ -117,6 +119,7 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
         setTitle(data.title || '');
         setPhone(data.phone || '');
         setWebsite(data.website || '');
+        setAddress(data.address || '');
         setDescription(data.description || '');
         setHighlights(data.highlights || '');
         setAmenities(Array.isArray(data.amenities) && data.amenities.length > 0 ? data.amenities : [""]);
@@ -191,6 +194,7 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
       formData.append("website", website);
       formData.append("description", description);
       formData.append("highlights", highlights);
+      formData.append("address", address);
       formData.append("amenities", JSON.stringify(amenities));
       formData.append("dealOptions", JSON.stringify(calculatedDealOptions));
       
@@ -303,6 +307,19 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
                 required
               />
             </div>
+          </div>
+          {/* Business Address Field */}
+          <div className="mb-6">
+            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">Business Address</label>
+            <input
+              id="address"
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Enter business address"
+              className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+              required
+            />
           </div>
         </div>
 
