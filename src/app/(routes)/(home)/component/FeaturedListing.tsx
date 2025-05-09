@@ -4,6 +4,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getFeaturedListings } from "../service/homeService";
 
+interface BusinessType {
+  _id: string;
+  name: string;
+  description?: string;
+}
+
 interface Listing {
   _id: string;
   title: string;
@@ -23,6 +29,7 @@ interface Listing {
   phone?: string;
   rating?: number;
   imageUrl?: string;
+  businessType?: BusinessType | string;
 }
 
 // Rest of your component code remains the same
@@ -178,7 +185,7 @@ const FeaturedListing = () => {
                 <span className="p-1.5 bg-orange-600 rounded-full me-2">
                   <RestaurantIcon />
                 </span>
-                <span>Restaurant</span>
+                <span>{typeof listing.businessType === 'object' && listing.businessType?.name ? listing.businessType.name : 'N/A'}</span>
               </div>
             </div>
             <div className="p-4">
