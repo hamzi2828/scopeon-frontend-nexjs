@@ -35,6 +35,17 @@ const SideBar = () => {
         >
           Create Listing
         </Link>
+
+        <Link
+          href="/merchant/business-type"
+          className={`block text-gray-600 ${
+            isActive("/merchant/business-type")
+              ? "bg-gray-100"
+              : "hover:bg-gray-100"
+          } lg:px-3 px-1 py-2 rounded-md duration-300 cursor-pointer`}
+        >
+          Business Type
+        </Link>
       
   
       </ul>

@@ -11,6 +11,7 @@ import PromoCodeSection from './components/PromoCodeSection';
 import SalePeriodSection from './components/SalePeriodSection';
 import BadgeToggles from './components/BadgeToggles';
 import MetaFields from './components/MetaFields';
+import BusinessTypeDropdown from './components/BusinessTypeDropdown';
 
 interface DealOption {
   title: string;
@@ -67,6 +68,7 @@ const initialDealOption = {
 };
 
 const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
+  const [businessType, setBusinessType] = useState("");
   const router = useRouter();
   const [listing, setListing] = useState<Listing | null>(null);
   const [loading, setLoading] = useState(true);
@@ -133,6 +135,12 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
         setHighlights(data.highlights || '');
         setAmenities(Array.isArray(data.amenities) && data.amenities.length > 0 ? data.amenities : [""]);
         setDealOptions(Array.isArray(data.dealOptions) && data.dealOptions.length > 0 ? data.dealOptions : [initialDealOption]);
+        // Handle both populated object and id string for businessType
+        if (data.businessType && typeof data.businessType === 'object' && data.businessType._id) {
+          setBusinessType(data.businessType._id);
+        } else {
+          setBusinessType(data.businessType || '');
+        }
         
         // Set badge toggles
         setShowBestRated(data.showBestRated || false);
@@ -204,6 +212,7 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
       formData.append("description", description);
       formData.append("highlights", highlights);
       formData.append("businessName", businessName);
+      formData.append("businessType", businessType); // businessType is now the ID
       formData.append("address", address);
       formData.append("metaTitle", metaTitle);
       formData.append("metaDescription", metaDescription);
@@ -321,17 +330,22 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
               />
             </div>
           </div>
-          <div className="mb-6">
-            <label htmlFor="businessName" className="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
-            <input
-              id="businessName"
-              type="text"
-              value={businessName}
-              onChange={(e) => setBusinessName(e.target.value)}
-              placeholder="Enter business name"
-              className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
-              required
-            />
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="w-full md:w-1/2">
+              <BusinessTypeDropdown value={businessType} onChange={setBusinessType} />
+            </div>
+            <div className="w-full md:w-1/2">
+              <label htmlFor="businessName" className="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
+              <input
+                id="businessName"
+                type="text"
+                value={businessName}
+                onChange={(e) => setBusinessName(e.target.value)}
+                placeholder="Enter business name"
+                className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                required
+              />
+            </div>
           </div>
           <div className="mb-6">
             <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">Business Address</label>

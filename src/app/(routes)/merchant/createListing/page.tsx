@@ -10,6 +10,7 @@ import PromoCodeSection from "./components/PromoCodeSection";
 import SalePeriodSection from "./components/SalePeriodSection";
 import BadgeToggles from "./components/BadgeToggles";
 import MetaFields from "./components/MetaFields";
+import BusinessTypeDropdown from "./components/BusinessTypeDropdown";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 const initialDealOption = {
   title: "",
@@ -26,6 +27,7 @@ const initialDealOption = {
 };
 
 const CreateListing = () => {
+  const [businessType, setBusinessType] = useState("");
   const [description, setDescription] = useState("");
   const [highlights, setHighlights] = useState("");
   const [amenities, setAmenities] = useState<string[]>([""]);
@@ -95,6 +97,7 @@ const CreateListing = () => {
     formData.append("metaDescription", metaDescription);
     formData.append("metaSchema", JSON.stringify(metaSchema));
     formData.append("businessName", businessName);
+    formData.append("businessType", businessType); // businessType is now the ID
     formData.append("amenities", JSON.stringify(amenities));
     formData.append("dealOptions", JSON.stringify(calculatedDealOptions));
     formData.append("showBestRated", JSON.stringify(showBestRated));
@@ -205,17 +208,22 @@ const CreateListing = () => {
               />
             </div>
           </div>
-          <div className="mb-6">
-            <label htmlFor="businessName" className="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
-            <input
-              id="businessName"
-              type="text"
-              value={businessName}
-              onChange={(e) => setBusinessName(e.target.value)}
-              placeholder="Enter business name"
-              className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
-              required
-            />
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="w-full md:w-1/2">
+              <BusinessTypeDropdown value={businessType} onChange={setBusinessType} />
+            </div>
+            <div className="w-full md:w-1/2">
+              <label htmlFor="businessName" className="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
+              <input
+                id="businessName"
+                type="text"
+                value={businessName}
+                onChange={(e) => setBusinessName(e.target.value)}
+                placeholder="Enter business name"
+                className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                required
+              />
+            </div>
           </div>
 
           <div className="mb-6">
