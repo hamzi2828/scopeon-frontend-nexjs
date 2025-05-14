@@ -2,56 +2,27 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import UploadPhotos from './components/UploadPhotos';
-import Amenities from './components/Amenities';
-import Description from './components/Description';
-import Highlights from './components/Highlights';
-import DealOptionsBuilder from './components/DealOptionsBuilder';
-import PromoCodeSection from './components/PromoCodeSection';
-import SalePeriodSection from './components/SalePeriodSection';
-import BadgeToggles from './components/BadgeToggles';
-import MetaFields from './components/MetaFields';
-import BusinessTypeDropdown from './components/BusinessTypeDropdown';
+import UploadPhotos from '../components/UploadPhotos';
+import Amenities from '../components/Amenities';
+import Description from '../components/Description';
+import Highlights from '../components/Highlights';
+import DealOptionsBuilder from '../components/DealOptionsBuilder';
+import PromoCodeSection from '../components/PromoCodeSection';
+import SalePeriodSection from '../components/SalePeriodSection';
+import BadgeToggles from '../components/BadgeToggles';
+import MetaFields from '../components/MetaFields';
+import BusinessTypeDropdown from '../components/BusinessTypeDropdown';
+import {
+  Listing,
+  fetchListingById,
+  formatDateForInput,
+  prepareListingFormData,
+  updateListing
+} from '../services/listingService';
 
-interface DealOption {
-  title: string;
-  originalPrice: string;
-  discountPercentage: string;
-  discountedPrice: string;
-  finalPrice: string;
-  extraOffer: string;
-  finalDiscountedPrice: string;
-  codeInfo: string;
-  purchaseInfo: string;
-  giftIcon: boolean;
-  discountType: 'percentage' | 'flat';
-}
+// Interface for DealOption is now imported from listingService.ts
 
-interface Listing {
-  _id: string;
-  title: string;
-  slug: string;
-  description?: string;
-  highlights?: string;  
-  amenities?: string[];
-  photos?: string[];
-  phone?: string;
-  website?: string;
-  address?: string;
-  dealOptions?: DealOption[];
-  isFeature?: boolean;
-  showBestRated?: boolean;
-  showBought?: boolean;
-  showSellingFast?: boolean;
-  startSaleDate?: string;
-  endSaleDate?: string;
-  promoCode?: string;
-  promoDiscount?: string;
-  promoType?: string;
-  promoValidUntil?: string;
-}
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+// API_BASE_URL is now managed in the service
 
 const initialDealOption = {
   title: "",
@@ -84,6 +55,9 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
   const [website, setWebsite] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [area, setArea] = useState("");
+  const [postalCode, setPostalCode] = useState("");
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [metaSchema, setMetaSchema] = useState<string[]>([""]);
@@ -113,13 +87,8 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
   useEffect(() => {
     const fetchListing = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/listings/${listingId}`, {
-          method: 'GET',
-        });
-        
-        if (!res.ok) throw new Error('Failed to fetch listing');
-        
-        const data = await res.json();
+        // Use the service to fetch the listing data
+        const data = await fetchListingById(listingId);
         setListing(data);
         
         // Initialize form data
@@ -128,6 +97,9 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
         setWebsite(data.website || '');
         setBusinessName(data.businessName || '');
         setAddress(data.address || '');
+        setCity(data.city || '');
+        setArea(data.area || '');
+        setPostalCode(data.postalCode || '');
         setMetaTitle(data.metaTitle || '');
         setMetaDescription(data.metaDescription || '');
         setMetaSchema(Array.isArray(data.metaSchema) && data.metaSchema.length > 0 ? data.metaSchema : [""]);
@@ -135,11 +107,12 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
         setHighlights(data.highlights || '');
         setAmenities(Array.isArray(data.amenities) && data.amenities.length > 0 ? data.amenities : [""]);
         setDealOptions(Array.isArray(data.dealOptions) && data.dealOptions.length > 0 ? data.dealOptions : [initialDealOption]);
+        
         // Handle both populated object and id string for businessType
         if (data.businessType && typeof data.businessType === 'object' && data.businessType._id) {
           setBusinessType(data.businessType._id);
         } else {
-          setBusinessType(data.businessType || '');
+          setBusinessType(data.businessType as string || '');
         }
         
         // Set badge toggles
@@ -147,15 +120,15 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
         setShowBought(data.showBought || false);
         setShowSellingFast(data.showSellingFast || false);
         
-        // Set sale period - format dates for input fields (YYYY-MM-DD)
-        setStartSaleDate(data.startSaleDate ? new Date(data.startSaleDate).toISOString().split('T')[0] : '');
-        setEndSaleDate(data.endSaleDate ? new Date(data.endSaleDate).toISOString().split('T')[0] : '');
+        // Set sale period using the service utility function
+        setStartSaleDate(formatDateForInput(data.startSaleDate));
+        setEndSaleDate(formatDateForInput(data.endSaleDate));
         
         // Set promo code
         setPromoCode(data.promoCode || '');
         setPromoDiscount(data.promoDiscount?.toString() || '');
         setPromoType(data.promoType || 'percent');
-        setPromoValidUntil(data.promoValidUntil ? new Date(data.promoValidUntil).toISOString().split('T')[0] : '');
+        setPromoValidUntil(formatDateForInput(data.promoValidUntil));
         
         // Set existing photos
         if (Array.isArray(data.photos) && data.photos.length > 0) {
@@ -182,77 +155,39 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
     setSuccess("");
     
     try {
-      // Calculate all price fields for each deal option
-      const calculatedDealOptions = dealOptions.map(option => {
-        const originalPrice = parseFloat(option.originalPrice || "0");
-        const discountValue = parseFloat(option.discountPercentage || "0");
-        let discountedPrice = 0;
-        
-        if (option.discountType === 'percentage') {
-          discountedPrice = originalPrice - (originalPrice * discountValue / 100);
-        } else { // flat discount
-          discountedPrice = originalPrice - discountValue;
-        }
-        
-        // Ensure price is never negative
-        discountedPrice = Math.max(0, discountedPrice);
-        
-        return {
-          ...option,
-          discountedPrice: discountedPrice.toFixed(2),
-          finalPrice: discountedPrice.toFixed(2),
-          finalDiscountedPrice: discountedPrice.toFixed(2)
-        };
-      });
+      // Use the service to prepare the form data
+      const listingData = {
+        title,
+        phone,
+        website,
+        description,
+        highlights,
+        businessName,
+        businessType,
+        address,
+        city,
+        area,
+        postalCode,
+        metaTitle,
+        metaDescription,
+        metaSchema,
+        amenities,
+        dealOptions,
+        showBestRated,
+        showBought,
+        showSellingFast,
+        startSaleDate,
+        endSaleDate,
+        promoCode,
+        promoDiscount,
+        promoType,
+        promoValidUntil
+      };
+
+      const formData = prepareListingFormData(listingData, photos, photosToRemove);
       
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("phone", phone);
-      formData.append("website", website);
-      formData.append("description", description);
-      formData.append("highlights", highlights);
-      formData.append("businessName", businessName);
-      formData.append("businessType", businessType); // businessType is now the ID
-      formData.append("address", address);
-      formData.append("metaTitle", metaTitle);
-      formData.append("metaDescription", metaDescription);
-      formData.append("metaSchema", JSON.stringify(metaSchema));
-      formData.append("amenities", JSON.stringify(amenities));
-      formData.append("dealOptions", JSON.stringify(calculatedDealOptions));
-      
-      // Add badge toggles
-      formData.append("showBestRated", JSON.stringify(showBestRated));
-      formData.append("showBought", JSON.stringify(showBought));
-      formData.append("showSellingFast", JSON.stringify(showSellingFast));
-      
-      // Add sale period
-      formData.append("startSaleDate", startSaleDate);
-      formData.append("endSaleDate", endSaleDate);
-      
-      // Add promo code
-      formData.append("promoCode", promoCode);
-      formData.append("promoDiscount", promoDiscount);
-      formData.append("promoType", promoType);
-      formData.append("promoValidUntil", promoValidUntil);
-      
-      // Add new photos
-      photos.forEach((photo) => {
-        formData.append("photos", photo);
-      });
-      
-      // Add photos to remove
-      if (photosToRemove.length > 0) {
-        formData.append("photosToRemove", JSON.stringify(photosToRemove));
-      }
-      
-      const res = await fetch(`${API_BASE_URL}/listings/update/${listingId}`, {
-        method: 'PATCH',
-        body: formData,
-      });
-      
-      if (!res.ok) {
-        throw new Error((await res.json()).message || 'Failed to update listing');
-      }
+      // Use the service to update the listing
+      await updateListing(listingId, formData);
       
       setSuccess("Listing updated successfully!");
       
@@ -354,10 +289,49 @@ const EditListingPage = ({ params }: { params: Promise<{ id: string }> }) => {
               type="text"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              placeholder="Enter business address"
+              placeholder="Enter street address"
               className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
               required
             />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div>
+              <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">City</label>
+              <input
+                id="city"
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="Enter city"
+                className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="area" className="block text-sm font-medium text-gray-700 mb-1">Area</label>
+              <input
+                id="area"
+                type="text"
+                value={area}
+                onChange={(e) => setArea(e.target.value)}
+                placeholder="Enter area/district"
+                className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="postalCode" className="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
+              <input
+                id="postalCode"
+                type="text"
+                value={postalCode}
+                onChange={(e) => setPostalCode(e.target.value)}
+                placeholder="Enter postal/ZIP code"
+                className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                required
+              />
+            </div>
           </div>
 
           {/* Meta Fields Section */}
