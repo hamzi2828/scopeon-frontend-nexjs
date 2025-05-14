@@ -11,7 +11,7 @@ import SalePeriodSection from "./components/SalePeriodSection";
 import BadgeToggles from "./components/BadgeToggles";
 import MetaFields from "./components/MetaFields";
 import BusinessTypeDropdown from "./components/BusinessTypeDropdown";
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+import { createListing, prepareListingFormData } from "./services/listingService";
 const initialDealOption = {
   title: "",
   originalPrice: "",
@@ -41,6 +41,9 @@ const CreateListing = () => {
   const [website, setWebsite] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [area, setArea] = useState("");
+  const [postalCode, setPostalCode] = useState("");
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [metaSchema, setMetaSchema] = useState<string[]>([""]);
@@ -63,79 +66,60 @@ const CreateListing = () => {
     setError("");
     setSuccess("");
 
-    // Calculate all price fields for each deal option
-    const calculatedDealOptions = dealOptions.map(option => {
-      const originalPrice = parseFloat(option.originalPrice || "0");
-      const discountValue = parseFloat(option.discountPercentage || "0");
-      let discountedPrice = 0;
-      
-      if (option.discountType === 'percentage') {
-        discountedPrice = originalPrice - (originalPrice * discountValue / 100);
-      } else { // flat discount
-        discountedPrice = originalPrice - discountValue;
-      }
-      
-      // Ensure price is never negative
-      discountedPrice = Math.max(0, discountedPrice);
-      
-      return {
-        ...option,
-        discountedPrice: discountedPrice.toFixed(2),
-        finalPrice: discountedPrice.toFixed(2),
-        finalDiscountedPrice: discountedPrice.toFixed(2)
-      };
-    });
-
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("highlights", highlights);
-    formData.append("phone", phone);
-    formData.append("website", website);
-    formData.append("address", address);
-    formData.append("metaTitle", metaTitle);
-    formData.append("metaDescription", metaDescription);
-    formData.append("metaSchema", JSON.stringify(metaSchema));
-    formData.append("businessName", businessName);
-    formData.append("businessType", businessType); // businessType is now the ID
-    formData.append("amenities", JSON.stringify(amenities));
-    formData.append("dealOptions", JSON.stringify(calculatedDealOptions));
-    formData.append("showBestRated", JSON.stringify(showBestRated));
-    formData.append("showBought", JSON.stringify(showBought));
-    formData.append("showSellingFast", JSON.stringify(showSellingFast));
-    formData.append("startSaleDate", startSaleDate);
-    formData.append("endSaleDate", endSaleDate);
-    formData.append("promoCode", promoCode);
-    formData.append("promoDiscount", promoDiscount);
-    formData.append("promoType", promoType);
-    formData.append("promoValidUntil", promoValidUntil);
-    photos.forEach((photo) => {
-      formData.append("photos", photo);
-    });
-
     try {
-      const res = await fetch(`${API_BASE_URL}/listings/create`, {
-        method: "POST",
-        body: formData,
-      });
+      // Prepare listing data using service
+      const listingData = {
+        title,
+        description,
+        highlights,
+        phone,
+        website,
+        address,
+        city,
+        area,
+        postalCode,
+        metaTitle,
+        metaDescription,
+        metaSchema,
+        businessName,
+        businessType,
+        amenities,
+        dealOptions,
+        showBestRated,
+        showBought,
+        showSellingFast,
+        startSaleDate,
+        endSaleDate,
+        promoCode,
+        promoDiscount,
+        promoType,
+        promoValidUntil
+      };
 
-      if (!res.ok) {
-        throw new Error((await res.json()).message || "Failed to create listing");
-      }
-      setSuccess("Listing created successfully!");
-      setTitle("");
-      setPhone("");
-      setWebsite("");
-      setAddress("");
-      setMetaTitle("");
-      setMetaDescription("");
-      setMetaSchema([""]);
-      setBusinessName("");
+      // Use the service to prepare form data and create listing
+      const formData = prepareListingFormData(listingData, photos);
+      const result = await createListing(formData);
+
+      setSuccess(result.message || "Listing created successfully!");
+      
+      // Reset form
       setDescription("");
       setHighlights("");
       setAmenities([""]);
       setPhotos([]);
       setDealOptions([initialDealOption]);
+      setTitle("");
+      setPhone("");
+      setWebsite("");
+      setBusinessName("");
+      setBusinessType("");
+      setAddress("");
+      setCity("");
+      setArea("");
+      setPostalCode("");
+      setMetaTitle("");
+      setMetaDescription("");
+      setMetaSchema([""]);
       setShowBestRated(false);
       setShowBought(false);
       setShowSellingFast(false);
@@ -146,8 +130,7 @@ const CreateListing = () => {
       setPromoType("percent");
       setPromoValidUntil("");
     } catch (err: unknown) {
-      const errMessage = (err as Error).message || "Something went wrong";
-      setError(errMessage);
+      setError(err instanceof Error ? err.message : "Error creating listing");
     } finally {
       setLoading(false);
     }
@@ -227,16 +210,55 @@ const CreateListing = () => {
           </div>
 
           <div className="mb-6">
-            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">Business Address</label>
+            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
             <input
               id="address"
               type="text"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              placeholder="Enter business address"
+              placeholder="Enter street address"
               className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
               required
             />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div>
+              <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">City</label>
+              <input
+                id="city"
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="Enter city"
+                className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="area" className="block text-sm font-medium text-gray-700 mb-1">Area</label>
+              <input
+                id="area"
+                type="text"
+                value={area}
+                onChange={(e) => setArea(e.target.value)}
+                placeholder="Enter area/district"
+                className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="postalCode" className="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
+              <input
+                id="postalCode"
+                type="text"
+                value={postalCode}
+                onChange={(e) => setPostalCode(e.target.value)}
+                placeholder="Enter postal/ZIP code"
+                className="w-full border border-gray-300 rounded-lg p-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                required
+              />
+            </div>
           </div>
 
           {/* Meta Fields Section */}
