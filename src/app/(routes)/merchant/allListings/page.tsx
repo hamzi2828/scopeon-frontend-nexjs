@@ -94,7 +94,6 @@ const AllListingsPage = () => {
     <div className="py-1 px-1 bg-gray-50 min-h-screen">
       <div className="max-w-full mx-auto">
         <h1 className="text-xl font-bold mb-1 text-gray-900">All Listings</h1>
-        <p className="text-gray-600 mb-2 text-xs">Manage your business listings. Edit, feature, or delete as needed.</p>
         <div className="overflow-x-auto rounded-md shadow bg-white">
           <table className="min-w-full divide-y divide-gray-200 text-xs">
             <thead className="bg-gray-100">
@@ -142,6 +141,12 @@ const AllListingsPage = () => {
                     </button>
                   </td>
                   <td className="px-2 py-1 text-center">
+                  <button
+                      onClick={() => router.push(`/merchant/listingReviews/${listing._id}`)}
+                      className="mr-1 px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded shadow text-xs font-semibold transition"
+                    >
+                      Reviews
+                    </button>
                     <button
                       onClick={() => router.push(`/merchant/editListing/${listing._id}`)}
                       className="mr-1 px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded shadow text-xs font-semibold transition"
