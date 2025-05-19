@@ -143,9 +143,9 @@ const AllListingsPage = () => {
                   <td className="px-2 py-1 text-center">
                   <button
                       onClick={() => router.push(`/merchant/listingReviews/${listing._id}`)}
-                      className="mr-1 px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded shadow text-xs font-semibold transition"
+                       className="mr-1 px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded shadow text-xs font-semibold transition"
                     >
-                      Reviews
+                       Reviews
                     </button>
                     <button
                       onClick={() => router.push(`/merchant/editListing/${listing._id}`)}
